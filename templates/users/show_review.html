@@ -1,0 +1,1190 @@
+{% extends 'title/../universe/../universe/base.html' %}
+{% block head %}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const field_change_review = document.getElementById('change_review');
+        field_change_review.addEventListener('click'){
+
+        }
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <style>
+    .review_creator{
+        margin-top: 30px;
+        margin-bottom: 30px;
+        font-size: 40px;
+    }
+    </style>
+    <a class="link" href="/accounts/profile/{{ profile_hash_user_id }}">
+        <div class="review_creator">
+            Создатель {{ profile.nickname }}
+        </div>
+    </a>
+    <style>
+        .review__title_wrapper{
+            display: flex;
+            gap: 25px;
+            color:black;
+        }
+        .poster-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .poster-item img {
+            width: 200px;
+            height: 300px;
+            background-color: #ffffff;
+            object-fit: cover;
+            display: block;
+        }
+        .review__title_informtaion_wrapper{
+            flex: 1;
+        }
+        .review__title_name{
+            font-size: 40px;
+            height: 150px;
+        }
+        .review__title_information{
+            height: 150px;
+        }
+        .link{
+            text-decoration: none;
+            color: black;
+        }
+        .link:hover{
+            color: grey;
+        }
+    </style>
+    <a class="link" href="/title/{{ content.id_title }}">
+        <div class="review__title_wrapper">
+            <div class="poster-item">
+                <img src="{{ content.poster }}" onerror="this" alt="{{ title.name }}">
+            </div>
+
+            <div class="review__title_informtaion_wrapper">
+                <div class="review__title_name">
+                    {{ content.name }}
+
+                </div>
+                <div class="review__title_information">
+                </div>
+            </div>
+        </div>
+    </a>
+    <style>
+    .review__wrapper{
+        background-color: #F2D0CE;
+        margin: 20px 0 0 ;
+        border-radius: 10px;
+        padding: 20px 20px 20px;
+    }
+    .review_type{
+        justify-content: center;
+
+        padding: 0 20px 0;
+        display: flex;
+        font-size: 24px;
+        {#justify-content: center;#}
+
+        &.negative{
+            background-color: #CD180E;
+            color: white;
+        }
+        &.positive{
+            background-color: #6B7A6F;
+            color: white;
+        }
+        &.neutral{
+            background-color: black;
+            color: white;
+        }
+    }
+
+    .review_name{
+        margin-top: 20px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .review_text{
+        margin-top: 30px;
+        font-size: 25px;
+    }
+    .datetime_review{
+        font-size: 20px;
+    }
+    .change_review{
+        cursor: pointer;
+        font-size: 20px;
+        background-color: black;
+        color: white;
+        fill: white;
+        border-radius: 90px;
+        padding: 5px 5px 5px;
+    }
+    .change_review:hover{
+        background-color: white;
+        color: black;
+        fill: black;
+    }
+    .change_review_wrapper{
+        margin-top: 20px;
+        display: flex;
+        justify-content: right;
+    }
+    .user_reactions_wrapper{
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: right;
+    }
+    .user_reaction{
+        width: 50px;
+        height: 50px;
+        {#background-color: palevioletred;#}
+        border-radius: 90px;
+        text-align: center;
+        align-content: center;
+        cursor: pointer;
+    }
+    .user_reaction.dislike.active{
+        background-color: #911a1a;
+        .svg_dislike{
+            fill: white;
+        }
+    }
+
+    .user_reaction.like.active{
+        {#background-color: #1a8c91;#}
+        background-color: #6B7A6F;
+        .svg_like{
+            fill: white;
+        }
+    }
+    </style>
+    <div class="review__wrapper">
+        <div class="datetime_review">{{ content.date_review }}</div>
+
+        {% if content.type_review == 1 %}
+            <div class="review_type positive">ПОЛОЖИТЕЛЬНАЯ</div>
+        {% elif content.type_review == 2 %}
+            <div class="review_type neutral">НЕЙТРАЛЬНАЯ</div>
+        {% else %}
+            <div class="review_type negative">ОТРИЦАТЕЛЬНАЯ</div>
+        {% endif %}
+        <div class="review_name">
+            {{ content.title_name }}
+        </div>
+        <div class="review_text">
+            {{ content.title_content }}
+        </div>
+        <div class="user_reactions_wrapper">
+            <div class="user_reaction like {% if content.user_like %}active{% endif %}" id="like_reaction">
+                <svg class="svg_like" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/></svg>
+            </div>
+            <div class="user_reaction dislike {% if content.user_dislike %}active{% endif %}" id="dislike_reaction">
+                <svg class="svg_dislike" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/></svg>
+            </div>
+        </div>
+        {% if own_page %}
+            <div class="change_review_wrapper">
+                <a class="change_review" id="change_review">
+                <svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M18.656.93,6.464,13.122A4.966,4.966,0,0,0,5,16.657V18a1,1,0,0,0,1,1H7.343a4.966,4.966,0,0,0,3.535-1.464L23.07,5.344a3.125,3.125,0,0,0,0-4.414A3.194,3.194,0,0,0,18.656.93Zm3,3L9.464,16.122A3.02,3.02,0,0,1,7.343,17H7v-.343a3.02,3.02,0,0,1,.878-2.121L20.07,2.344a1.148,1.148,0,0,1,1.586,0A1.123,1.123,0,0,1,21.656,3.93Z"/><path d="M23,8.979a1,1,0,0,0-1,1V15H18a3,3,0,0,0-3,3v4H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2h9.042a1,1,0,0,0,0-2H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H16.343a4.968,4.968,0,0,0,3.536-1.464l2.656-2.658A4.968,4.968,0,0,0,24,16.343V9.979A1,1,0,0,0,23,8.979ZM18.465,21.122a2.975,2.975,0,0,1-1.465.8V18a1,1,0,0,1,1-1h3.925a3.016,3.016,0,0,1-.8,1.464Z"/></svg>
+                Изменить рецензию
+            </a></div>
+        {% endif %}
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const field_like_reaction = document.getElementById('like_reaction');
+        const field_dislike_reaction = document.getElementById('dislike_reaction');
+        field_like_reaction.addEventListener('click', event =>{
+            if (field_like_reaction.classList.contains('active')){
+                field_like_reaction.classList.remove('active')
+                user_reaction_review('None')
+            }else{
+                field_like_reaction.classList.add('active')
+                field_dislike_reaction.classList.remove('active')
+                user_reaction_review('like')
+            }
+        })
+        field_dislike_reaction.addEventListener('click', event =>{
+            if (field_dislike_reaction.classList.contains('active')){
+                field_dislike_reaction.classList.remove('active')
+                user_reaction_review('None')
+            }else{
+                field_dislike_reaction.classList.add('active')
+                field_like_reaction.classList.remove('active')
+                user_reaction_review('dislike')
+            }
+
+
+        })
+
+
+    })
+    function user_reaction_review(reaction){
+        console.log("реакция")
+        fetch(`/accounts/profile/{{ profile_hash_user_id }}/review/{{ content.id_title }}/reaction?reaction=${reaction}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+
+                    })
+    }
+    </script>
+    <style>
+    .change_review_content_wrapper{
+        margin-top: 100px;
+        display: flex;
+        justify-content: center;
+        &.hide{
+            display: none;
+        }
+    }
+    .review__input_field_title{
+        width: 500px;
+        height: 50px;
+        padding: 5px 5px 5px;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    .review__input_field_text{
+        width: 500px;
+        border-radius: 5px;
+        padding: 5px 5px 5px;
+        height: 200px;
+        resize: none;
+    }
+    .review__choose_type_wrapper{
+        display: flex;
+        flex-direction: row;
+        background-color: #c6c6c6;
+        border-radius: 90px;
+        {#padding: 5px 0 5px;#}
+
+    }
+    .review_type_button{
+        align-content: center;
+        text-align: center;
+        {#border-radius: 90px;#}
+        height: 30px;
+        background-color: #c6c6c6;
+        flex: 1;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;
+        &:hover{
+            color: black;
+        }
+         }
+    .review_type_button.negative{
+        border-top-right-radius: 90px;
+        border-bottom-right-radius: 90px;
+    }
+    .review_type_button.positive{
+        border-top-left-radius: 90px;
+        border-bottom-left-radius: 90px;
+    }
+    .review_type_button.active.negative{
+        background-color: #CD180E;
+        color: white;
+    }
+    .review_type_button.active.positive{
+        background-color: #6B7A6F;
+        color: white;
+    }
+    .review_type_button.active.neutral{
+        background-color: black;
+        color: white;
+    }
+    .review__change_header_description{
+        display: flex;
+        font-size: 25px;
+        justify-content: center;
+        font-weight: bold;
+        margin: 10px 0 10px;
+    }
+    .review__container{
+        border-radius: 20px;
+        background-color: #F2D0CE;
+        padding: 10px 10px 10px;
+    }
+    .review__submit_change_button{
+        padding: 5px 5px 5px;
+        background-color: #6B7A6F;
+        color: white;
+        text-align: center;
+        border-radius: 90px;
+        cursor: pointer;
+    }
+    .review__submit_change_button:hover{
+        background-color: rgba(107, 122, 111, 0.80);
+    }
+    </style>
+    {% if own_page %}
+        <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const field_change_review = document.getElementById('change_review');
+            const field_change_review_content_wrapper = document.getElementById('change_review_content_wrapper')
+            field_change_review.addEventListener('click', event => {
+                field_change_review_content_wrapper.classList.remove('hide')
+            })
+
+
+            const review_type_button = document.getElementsByClassName('review_type_button')
+            const review__value_select_type = document.getElementById('review__value_select_type')
+            document.querySelectorAll('.review_type_button').forEach(button => {
+                button.addEventListener('click', event=>{
+                    document.querySelectorAll('.review_type_button').forEach(button_to_close =>{
+                        button_to_close.classList.remove('active')
+                    });
+                    button.classList.add('active')
+                    review__value_select_type.value = event.target.dataset.value
+                })
+            })
+
+            const field_submit_change_button = document.getElementById('submit_change_button')
+
+            field_submit_change_button.addEventListener('click', event=>{
+
+
+                send_review_change(
+                    document.getElementById('header_input_field_title'),
+                    document.getElementById('review__value_select_type'),
+                    document.getElementById('input_field_text')
+                )
+            });
+            function send_review_change(title, type, text){
+            if (!(['1','2','3'].includes(type.value))) {
+                return
+            }
+                const dataToSend = {
+                    title: title.value,
+                    type: type.value,
+                    text: text.value
+                };
+
+                fetch(`{{ content.id_title }}/change/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        field_change_review_content_wrapper.classList.add('hide')
+
+                    })
+        }
+        })
+
+
+    </script>
+        <div class="change_review_content_wrapper hide" id="change_review_content_wrapper">
+            <div class="review__container">
+                <div class="review__change_header_description">Заголовок</div>
+                <p><textarea class="review__input_field_title" id="header_input_field_title">{{ content.title_name }}</textarea></p>
+                <div class="review__change_header_description">Тип рецензии</div>
+                <div class="review__choose_type_wrapper">
+                    <a class="review_type_button positive {% if content.type_review == 1 %}active{% endif %}" data-value="1">Положительная</a>
+                    <div style="width: 1px; background-color: black"></div>
+                    <a class="review_type_button neutral {% if content.type_review == 2 %}active{% endif %}" data-value="2">Нейтральная</a>
+                    <div style="width: 1px; background-color: black"></div>
+                    <a class="review_type_button negative {% if content.type_review == 3 %}active{% endif %}" data-value="3">Отрицательная</a>
+                </div>
+
+                <input type="hidden" id="review__value_select_type" value="{% if content.type_review == 1 %}1{% elif content.type_review == 2 %}2{% else %}3{% endif %}">
+
+                <div class="review__change_header_description">Основной текст</div>
+                <p><textarea class="review__input_field_text" id="input_field_text">{{ content.title_content }}</textarea></p>
+                <div class="review__submit_change_button" id="submit_change_button">Изменить</div>
+
+            </div>
+        </div>
+    {% endif %}
+
+
+
+
+
+
+    <div style="height: 500px"></div>
+    <style>
+        .review_preview {
+            display: flex;
+            justify-content: center;
+            font-size: 40px;
+            padding: 20px 0 20px;
+        }
+
+        .user_reviews {
+            display: grid;
+            grid-template-columns: auto;
+            grid-auto-flow: row;
+            gap: 40px;
+            padding: 20px 20px 20px;
+            overflow: hidden;
+            word-break: normal;
+        }
+
+        .user_review_information_wrapper {
+            background-color: white;
+            display: block;
+            flex-grow: 1;
+            height: 300px;
+        }
+
+        .review_title_name {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .review_title_text {
+            font-size: 18px;
+
+            display: block;
+            word-break: break-word;
+            overflow: hidden;
+        }
+
+        .review_movie_name {
+            font-size: 30px;
+            height: 72px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .review_wrapper {
+            padding: 5px 5px 5px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+
+        }
+
+        .top_titles_main_block {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            bottom: 50px;
+            left: 65px;
+            width: 71px;
+            height: 71px;
+            background-color: palevioletred;
+            color: #81d5f1;
+            border-radius: 20px;
+            transform: rotate(45deg);
+            z-index: 100;
+        }
+
+        .top_titles_main_block_text {
+            font-size: 100px;
+            font-family: "Rouge Script";
+            transform: rotate(-45deg);
+        }
+
+        .review_movie_information {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+
+        }
+
+        .reviews__review_information {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .choose_pages_wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .buttons_page{
+            background-color: palevioletred;
+            color: white;
+            font-size: 30px;
+            text-decoration: none;
+            width: 120px;
+            padding: 5px 5px 5px;
+            border-radius: 90px;
+            align-items: center;
+            align-content: center;
+            text-align: center;
+        }
+        .buttons_page:hover{
+            background-color: #a83f61;
+        }
+    </style>
+
+{#    {% if isshow %}#}
+{##}
+{#    <div class="review_preview">#}
+{#        Рецензии  "<a  style="color: black;" href="/accounts/profile/{{ profile_hash_user_id }}"> {{ nickname }}</a>"#}
+{#    </div>#}
+{#    <div class="choose_pages_wrapper">#}
+{#        {% if page_down > 0 %}#}
+{#            <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>#}
+{#                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">#}
+{#                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>#}
+{#                </svg>#}
+{#                Назад#}
+{#            </a>#}
+{#        {% endif %}#}
+{#        <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>#}
+{#            Вперед#}
+{#            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">#}
+{#                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>#}
+{#            </svg>#}
+{##}
+{#        </a>#}
+{##}
+{#    </div>#}
+{#    <div class="user_reviews">#}
+{#        {% for review in reviews %}#}
+{#            <div class="review_wrapper">#}
+{##}
+{##}
+{#                <div class="info_fact__poster_item">#}
+{#                    <a href="/title/{{ review.id_title }}"><img src="{{ review.poster }}" alt="{{ review.name }}"></a>#}
+{##}
+{#                    <div class="top_titles_main_block">#}
+{#                        <div class="top_titles_main_block_text">{{ review.user_rate }}</div>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#                <div class="user_review_information_wrapper">#}
+{#                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 100px 195px; gap: 5px">#}
+{#                        <div>#}
+{#                            <div class="review_movie_name">{{ review.name }}</div>#}
+{#                            <div class="review_movie_information">#}
+{#                                <div class="list_titles__title_rates">#}
+{#                                    <div class="poster-ratefilm">{{ review.rate_film }}</div>#}
+{#                                    <div class="poster-kprate">{{ review.kp_rate }}</div>#}
+{#                                    <div class="poster-imdbrate">{{ review.imdb_rate }}</div>#}
+{#                                </div>#}
+{##}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div style="overflow: scroll;">#}
+{#                            <div class="reviews__review_information">#}
+{##}
+{#                                {% if review.type_review == 1 %}#}
+{#                                    <div class="text_type_review" style="color: #7cea8a;">ПОЛОЖИТЕЛЬНАЯ</div>#}
+{#                                {% elif review.type_review == 2 %}#}
+{#                                    <div class="text_type_review" style="color: #c1a8cf;">НЕЙТРАЛЬНАЯ</div>#}
+{#                                {% else %}#}
+{#                                    <div class="text_type_review" style="color: #dd2647;">ОТРИЦАТЕЛЬНАЯ</div>#}
+{#                                {% endif %}#}
+{#                                <div class="text_type_review">{{ review.date_review }}</div>#}
+{#                            </div>#}
+{##}
+{#                            <div class="review_title_name">{{ review.title_name }}</div>#}
+{##}
+{#                            <div class="review_title_text">{{ review.title_content }}</div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#    #}
+{#    {% else %}#}
+{#        <div style="display: flex; justify-content: center; height: 200px; font-size: 50px">Пользователь заблокировал аккаунт</div>#}
+{#    {% endif %}#}
+    {% if reviews|length > 2 %}
+            <div class="choose_pages_wrapper">
+        {% if page_down > 0 %}
+            <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>
+                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                </svg>
+                Назад
+            </a>
+        {% endif %}
+        <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>
+            Вперед
+            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+            </svg>
+
+        </a>
+
+    </div>
+        
+    {% endif %}
+
+
+    <style>
+        .list_titles_on_grid {
+            background-color: #f3dcf2;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            grid-template-rows: 225px 225px;
+            grid-auto-flow: row;
+            gap: 40px;
+            padding: 20px 20px 20px;
+            overflow: hidden;
+        }
+
+        .info_fact__poster_item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info_fact__poster_item img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .title_item_poster_info {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .poster-imdbrate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgb(245, 197, 24);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-kprate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 84, 1, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-ratefilm {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(219, 112, 147, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-user_rate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .list_titles__title_rates {
+            display: flex;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__rates_wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__info {
+            position: relative;
+            display: block;
+            flex-grow: 1;
+            overflow: scroll;
+        }
+    </style>
+
+{% endblock %}
+
+{% block mobile_head %}
+    <style>
+        .mobile__review_wrapper{
+            padding: 5px 10px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .mobile__review__poster_item{
+            height: 100px;
+
+        }
+        .rate_poster{
+            position: absolute;
+            padding: 2px 2px 2px;
+            color: black;
+            {#width: 50px;#}
+            top: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+            border-radius: 90px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+            z-index: 100;
+            &.ratefilm{
+                left:2px;
+                top: 2px;
+                background-color: #CD180E;
+                color: white;
+            }
+            &.kprate{
+                background-color: rgb(255, 84, 1);
+                left: 48px;
+                top: 2px;
+            }
+            &.imdbrate{
+                background-color: rgb(245, 197, 24);
+                top: 2px;
+                right: 2px;
+            }
+             &.block{
+                position: static;
+            }
+        }
+        .mobile__review__title_info__rates{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+        .mobile__review__review_type{
+            display: flex;
+            justify-content: center;
+
+            &.negative{
+                background-color: #CD180E;
+                color: white;
+            }
+            &.positive{
+                background-color: #6B7A6F;
+                color: white;
+            }
+            &.neutral{
+                background-color: black;
+                color: white;
+            }
+
+        }
+        .mobile__review__review_container{
+            display: block;
+        }
+        .mobile__review__title_info{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile__review__title_info__name{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .review_title_name{
+            font-weight: bold;
+        }
+        .mobile_change_review_wrapper{
+            margin-top: 30px;
+            padding: 0 10px 0;
+            display: flex;
+            justify-content: right;
+
+        }
+        .mobile_change_review{
+            padding: 5px 5px 5px;
+            background-color: black;
+            fill: white;
+            color: white;
+            border-radius: 90px;
+            &:hover{
+                color: white;
+            }
+        }
+        .review_creator{
+            font-size: 25px;
+            font-weight: bold;
+        }
+    </style>
+    <style>
+    .mobile_write_review_wrapper{
+        padding: 0 10px 0;
+        &.hide{
+            display: none;
+        }
+    }
+    .change_review_content_wrapper{
+        margin-top: 100px;
+        display: block;
+    }
+    .review__input_field_title{
+        display: block;
+        width: 100%;
+
+        height: 50px;
+        padding: 5px 5px 5px;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    .review__input_field_text{
+        display: block;
+        width: 100%;
+        border-radius: 5px;
+        padding: 5px 5px 5px;
+        height: 200px;
+        resize: none;
+    }
+    .review__choose_type_wrapper{
+        display: flex;
+        flex-direction: row;
+        background-color: #c6c6c6;
+        border-radius: 90px;
+        {#padding: 5px 0 5px;#}
+
+    }
+    .review_type_button{
+        align-content: center;
+        text-align: center;
+        {#border-radius: 90px;#}
+        height: 30px;
+        font-size: 14px;
+        background-color: #c6c6c6;
+        flex: 1;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;
+        &:hover{
+            color: black;
+        }
+         }
+    .review_type_button.negative{
+        border-top-right-radius: 90px;
+        border-bottom-right-radius: 90px;
+    }
+    .review_type_button.positive{
+        border-top-left-radius: 90px;
+        border-bottom-left-radius: 90px;
+    }
+    .review_type_button.active.negative{
+        background-color: #CD180E;
+        color: white;
+    }
+    .review_type_button.active.positive{
+        background-color: #6B7A6F;
+        color: white;
+    }
+    .review_type_button.active.neutral{
+        background-color: black;
+        color: white;
+    }
+    .review__change_header_description{
+        display: flex;
+        font-size: 20px;
+        justify-content: center;
+        font-weight: bold;
+        margin: 10px 0 10px;
+    }
+    .review__container{
+        border-radius: 20px;
+        background-color: #F2D0CE;
+        padding: 10px 10px 10px;
+    }
+    .review__submit_change_button{
+        padding: 5px 5px 5px;
+        background-color: #6B7A6F;
+        color: white;
+        text-align: center;
+        border-radius: 90px;
+        cursor: pointer;
+    }
+    .review__submit_change_button:hover{
+        background-color: rgba(107, 122, 111, 0.80);
+    }
+    .user_reactions_wrapper{
+        display: flex;
+        flex-direction: row;
+        justify-content: right;
+        gap: 10px;
+
+    }
+    .user_reaction{
+        width: 50px;
+        height: 50px;
+        {#background-color: palevioletred;#}
+        border-radius: 90px;
+        text-align: center;
+        align-content: center;
+        cursor: pointer;
+    }
+    .user_reaction.dislike.active{
+        background-color: #911a1a;
+        .svg_dislike{
+            fill: white;
+        }
+    }
+
+    .user_reaction.like.active{
+        background-color: #6B7A6F;
+        {#background-color: #1a8c91;#}
+        .svg_like{
+            fill: white;
+        }
+    }
+    </style>
+    {% if own_page %}
+        <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const field_change_review_content_wrapper = document.getElementById('mobile_change_review__container')
+
+            const field_change_review = document.getElementById('button_change_review');
+            field_change_review.addEventListener('click', event => {
+                field_change_review_content_wrapper.classList.remove('hide')
+            })
+
+            const review_type_button = document.getElementsByClassName('review_type_button')
+            const review__value_select_type = document.getElementById('review__value_select_type')
+            document.querySelectorAll('.review_type_button').forEach(button => {
+                button.addEventListener('click', event=>{
+                    document.querySelectorAll('.review_type_button').forEach(button_to_close =>{
+                        button_to_close.classList.remove('active')
+                    });
+                    button.classList.add('active')
+                    review__value_select_type.value = event.target.dataset.value
+                })
+            })
+
+            const field_submit_change_button = document.getElementById('submit_change_button')
+
+            field_submit_change_button.addEventListener('click', event=>{
+                const dataToSend = {
+                    title: document.getElementById('header_input_field_title').value,
+                    type: document.getElementById('review__value_select_type').value,
+                    text: document.getElementById('input_field_text').value
+                };
+                if (dataToSend.title.length > 3 || dataToSend.type.length === 1 || dataToSend.text.length > 20){
+                    send_review_change(dataToSend)
+                }
+
+            });
+            function send_review_change(dataToSend){
+                {#if (!(['1','2','3'].includes(dataToSend.type.value))) {#}
+                {#    return#}
+                {# }#}
+                fetch(`{{ content.id_title }}/change/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        field_change_review_content_wrapper.classList.add('hide')
+
+                    })
+        }
+        })
+    </script>
+    {% endif %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const field_like_reaction = document.getElementById('like_reaction');
+        const field_dislike_reaction = document.getElementById('dislike_reaction');
+        field_like_reaction.addEventListener('click', event =>{
+            if (field_like_reaction.classList.contains('active')){
+                field_like_reaction.classList.remove('active')
+                user_reaction_review('None')
+            }else{
+                field_like_reaction.classList.add('active')
+                field_dislike_reaction.classList.remove('active')
+                user_reaction_review('like')
+            }
+        })
+        field_dislike_reaction.addEventListener('click', event =>{
+            if (field_dislike_reaction.classList.contains('active')){
+                field_dislike_reaction.classList.remove('active')
+                user_reaction_review('None')
+            }else{
+                field_dislike_reaction.classList.add('active')
+                field_like_reaction.classList.remove('active')
+                user_reaction_review('dislike')
+            }
+
+
+        })
+
+
+    })
+    function user_reaction_review(reaction){
+        console.log("реакция")
+        fetch(`/accounts/profile/{{ profile_hash_user_id }}/review/{{ content.id_title }}/reaction?reaction=${reaction}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+
+                    })
+    }
+    </script>
+{% endblock %}
+
+{% block mobile_content %}
+    <div class="mobile__review_wrapper">
+     <a class="link" href="/accounts/profile/{{ profile_hash_user_id }}">
+        <div class="review_creator">
+            Создатель {{ profile.nickname }}
+        </div>
+    </a>
+                <a href="/title/{{ content.id_title }}" class="link">
+                    <div class="mobile__review__title_info">
+                        <img  class="mobile__review__poster_item" src="{{ content.poster }}" alt="{{ content.name }}">
+                        <div>
+                            <div class="mobile__review__title_info__name">{{ content.name }}</div>
+                            <div class="mobile__review__title_info__add">
+                                <div class="mobile__review__title_info__rates">
+                                    <div class="rate_poster ratefilm block">{{ content.rate_film }}</div>
+                                    <div class="rate_poster kprate block">{{ content.kp_rate }}</div>
+                                    <div class="rate_poster imdbrate block">{{ content.imdb_rate }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <div class="mobile__review__review_info">
+                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 100px 195px; gap: 5px">
+
+                        </div>
+                        <a class="link" style="overflow: scroll;" href="{{ profile_hash_user_id }}/review/{{ content.id_title }}">
+                            <div>
+                                <div class="mobile__review__review_container">
+
+                                    {% if content.type_review == 1 %}
+                                        <div class="mobile__review__review_type positive" >ПОЛОЖИТЕЛЬНАЯ</div>
+                                    {% elif content.type_review == 2 %}
+                                        <div class="mobile__review__review_type neutral" >НЕЙТРАЛЬНАЯ</div>
+                                    {% else %}
+                                        <div class="mobile__review__review_type negative">ОТРИЦАТЕЛЬНАЯ</div>
+                                    {% endif %}
+                                    <div class="text_type_review">{{ content.date_review }}</div>
+                                </div>
+                                <div class="review_title_name">{{ content.title_name }}</div>
+
+                                <div class="review_title_text">{{ content.title_content }}</div>
+                            </div>
+                        </a>
+                </div>
+                {% if isshow %}
+                    {% if user_auth %}
+                        <div class="user_reactions_wrapper">
+                            <div class="user_reaction like {% if content.user_like %}active{% endif %}" id="like_reaction">
+                                <svg class="svg_like" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/></svg>
+                            </div>
+                            <div class="user_reaction dislike {% if content.user_dislike %}active{% endif %}" id="dislike_reaction">
+                                <svg class="svg_dislike" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/></svg>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+    {% if own_page %}
+        <div class="mobile_change_review_wrapper">
+            <a class="mobile_change_review" id="button_change_review">
+            <svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="24" height="24"><path d="M18.656.93,6.464,13.122A4.966,4.966,0,0,0,5,16.657V18a1,1,0,0,0,1,1H7.343a4.966,4.966,0,0,0,3.535-1.464L23.07,5.344a3.125,3.125,0,0,0,0-4.414A3.194,3.194,0,0,0,18.656.93Zm3,3L9.464,16.122A3.02,3.02,0,0,1,7.343,17H7v-.343a3.02,3.02,0,0,1,.878-2.121L20.07,2.344a1.148,1.148,0,0,1,1.586,0A1.123,1.123,0,0,1,21.656,3.93Z"/><path d="M23,8.979a1,1,0,0,0-1,1V15H18a3,3,0,0,0-3,3v4H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2h9.042a1,1,0,0,0,0-2H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H16.343a4.968,4.968,0,0,0,3.536-1.464l2.656-2.658A4.968,4.968,0,0,0,24,16.343V9.979A1,1,0,0,0,23,8.979ZM18.465,21.122a2.975,2.975,0,0,1-1.465.8V18a1,1,0,0,1,1-1h3.925a3.016,3.016,0,0,1-.8,1.464Z"/></svg>
+            Изменить рецензию
+            </a>
+        </div>
+    {% endif %}
+    {% if own_page %}
+        <div class="mobile_write_review_wrapper hide" id="mobile_change_review__container">
+        <div class="change_review_content_wrapper" id="change_review_content_wrapper">
+            <div class="review__container">
+                <div class="review__change_header_description">Написать рецензию</div>
+
+                <div class="review__change_header_description">Заголовок</div>
+                <p><textarea class="review__input_field_title" id="header_input_field_title">{{ content.title_name }}</textarea></p>
+                <div class="review__change_header_description">Тип рецензии</div>
+                <div class="review__choose_type_wrapper">
+                    <a class="review_type_button positive {% if content.type_review == 1 %}active{% endif %}" data-value="1">Положительная</a>
+                    <div style="width: 1px; background-color: black"></div>
+                    <a class="review_type_button neutral {% if content.type_review == 2 %}active{% endif %}" data-value="2">Нейтральная</a>
+                    <div style="width: 1px; background-color: black"></div>
+                    <a class="review_type_button negative {% if content.type_review == 3 %}active{% endif %}" data-value="3">Отрицательная</a>
+                </div>
+
+                <input type="hidden" id="review__value_select_type" value="{% if content.type_review == 1 %}1{% elif content.type_review == 2 %}2{% else %}3{% endif %}">
+
+                <div class="review__change_header_description">Основной текст</div>
+                <p><textarea class="review__input_field_text" id="input_field_text">{{ content.title_content }}</textarea></p>
+                <div class="review__submit_change_button" id="submit_change_button">Изменить</div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+

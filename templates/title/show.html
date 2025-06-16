@@ -1,0 +1,2545 @@
+{% extends 'title/../universe/../universe/base.html' %}
+
+{% block universe_head %}
+
+{% endblock %}
+
+{% block head %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const field_favorite = document.getElementById('field_to_favorite');
+            const field_pin = document.getElementById('field_to_pin');
+            const icon_switch_bookmark = document.getElementById('icon_switch_bookmark');
+            const icon_switch_favorite = document.getElementById('icon_switch_favorite');
+
+            const SelectTypereview = document.getElementById('SelectTypereview');
+            const review_textarea = document.getElementById('review_textarea');
+            const title_review = document.getElementById('title_review');
+            const reviewContainer = document.getElementById('container_review');
+            {#const reviewClass = document.querySelector('.User__review');#}
+
+            const FieldsDoCrown = document.querySelectorAll('.userDo__crown span');
+            const FieldsDoBookmark = document.querySelectorAll('.userDo__bookmark span');
+
+            const FormReview = document.getElementById('FormReview');
+            const PostReview = document.getElementById('Postreview');
+
+            var ispin = {{ ispin }}
+            var isfavorite = {{ isfavorite }}
+
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            if (ispin === 1) {
+                change_view_bookmark(1)
+
+
+            }
+            if (isfavorite === 1) {
+                change_view_heart(1)
+
+            }
+
+            field_pin.addEventListener("click", (event) => {
+                {#alert('asja')#}
+                if (ispin === 1) {
+                    var path_post = 'pinout'
+                    ispin = 0
+                } else {
+                    var path_post = 'pinit'
+                    ispin = 1
+                }
+                fetch(window.location.pathname + path_post + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                    })
+                    .then(data => {
+
+                    })
+                if (ispin === 1) {
+                    change_view_bookmark(1)
+                } else {
+                    change_view_bookmark(0)
+                }
+
+            });
+            field_favorite.addEventListener("click", (event) => {
+                {#alert('asja')#}
+                if (isfavorite === 1) {
+                    var path_post = 'favoriteout'
+                    isfavorite = 0
+                } else {
+                    var path_post = 'favoriteit'
+                    isfavorite = 1
+                }
+                fetch(window.location.pathname + path_post + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                    })
+                    .then(data => {
+
+                    })
+                if (isfavorite === 1) {
+                    change_view_heart(1)
+                } else {
+                    change_view_heart(0)
+                }
+
+            });
+
+
+            SelectTypereview.addEventListener('change', (event) => {
+                if (SelectTypereview.value === '1') {
+                    PostReview.style.backgroundColor = '#A9F2F5';
+                    reviewContainer.style.backgroundColor = '#A9F2F5';
+                } else if (SelectTypereview.value === '2') {
+                    PostReview.style.backgroundColor = '#C2B1C4';
+                    reviewContainer.style.backgroundColor = '#C2B1C4';
+                } else if (SelectTypereview.value === '3') {
+                    PostReview.style.backgroundColor = '#DB7093';
+                    reviewContainer.style.backgroundColor = '#DB7093';
+                } else {
+                    reviewContainer.style.backgroundColor = 'white';
+                }
+
+            });
+
+            PostReview.addEventListener('click', (event) => {
+                if (SelectTypereview.value === '') {
+                    return
+                }
+                const dataToSend = {
+                    title: title_review.value,
+                    type: SelectTypereview.value,
+                    text: review_textarea.value
+                };
+
+                fetch(window.location.pathname + "review/", {  // URL вашего представления (определите в urls.py)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        reviewContainer.innerHTML = "<h3>Рецензия отправлена</h3>"
+                    })
+            });
+
+            function change_view_bookmark(change_type) {
+                if (change_type === 1) {
+                    text_update = `<svg class="svg_icon active" xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M2.849,23.55a2.954,2.954,0,0,0,3.266-.644L12,17.053l5.885,5.853a2.956,2.956,0,0,0,2.1.881,3.05,3.05,0,0,0,1.17-.237A2.953,2.953,0,0,0,23,20.779V5a5.006,5.006,0,0,0-5-5H6A5.006,5.006,0,0,0,1,5V20.779A2.953,2.953,0,0,0,2.849,23.55Z"/></svg>`
+                    field_pin.classList.add('active')
+                } else {
+                    text_update = `<svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z"/></svg>`
+                    field_pin.classList.remove('active')
+                }
+                icon_switch_bookmark.innerHTML = text_update
+
+            }
+
+            function change_view_heart(change_type) {
+                if (change_type === 1) {
+                    text_update = `<svg class="svg_icon active" xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z"/></svg>`
+                    field_favorite.classList.add('active')
+
+                } else {
+                    text_update = `<svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>`
+                    field_favorite.classList.remove('active')
+
+                }
+                icon_switch_favorite.innerHTML = text_update
+
+            }
+        });
+    </script>
+    <style>
+        .style_title {
+            background-color: #fff2fe;
+            border: 1px solid #f0fad4;
+            color: #000000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .title__titles_auto_grid {
+            display: grid;
+            grid-gap: 37px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 150px));
+            word-break: break-all;
+        }
+
+        .item {
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ratingStars = document.querySelectorAll('.title_rating span');
+            const ratingText = document.querySelectorAll('.text_rating_choose span');
+            const ratingInput = document.querySelector('.title_rating input[name="rating"]');
+            const ratingDiv = document.querySelector('.title_rating');
+            const rate_button_wrapper = document.getElementById('rate_button_wrapper');
+            const field_change_rate = document.getElementById("field_change_rate")
+            const stars_wrapper = document.getElementById('stars_wrapper')
+
+            const movieId = ratingDiv.dataset.movieid;
+
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            {#const  = document.querySelector('.span_rate');#}
+            ratingStars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = star.dataset.value;
+
+                    ratingInput.value = value;
+
+                    highlightStars(value);
+
+                    fetch(window.location.pathname + `rate/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({rating: value})
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            stars_wrapper.style.display = 'none'
+                            field_change_rate.innerText = `${Number(value) + 1}`
+                            field_change_rate.classList.add('rate')
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                            alert('Произошла ошибка при сохранении оценки.');
+                        });
+                });
+
+                star.addEventListener('mouseover', () => {
+                    highlightStars(star.dataset.value);
+                    changeColor()
+                });
+
+                star.addEventListener('mouseout', () => {
+                    highlightStars(ratingInput.value);
+                    changeColor()
+
+                });
+
+            });
+
+            function highlightStars(value) {
+                ratingText.forEach(rate => {
+                    rate.textContent = Number(value) + 1;
+                })
+                ratingStars.forEach(star => {
+                    if (star.dataset.value <= value) {
+                        star.textContent = '★';
+                        var color = "green", val = value;
+                        if (val > 4 && val < 7) {
+                            color = "grey";
+                        } else if (val <= 4) {
+                            color = "red";
+                        }
+                        star.style.color = color
+                    } else {
+                        star.textContent = '☆';
+                        star.style.color = 'black'
+                    }
+                });
+
+            }
+
+            function changeColor() {
+                ratingText.forEach(rate => {
+                    var color = "green", val = Number(rate.textContent);
+                    if (val > 4 && val < 7) {
+                        color = "grey";
+                    } else if (val <= 4) {
+                        color = "red";
+                    }
+                    rate.style.color = color;
+                })
+
+            }
+
+            document.getElementById("rate_button_wrapper").addEventListener('click', event => {
+                stars_wrapper.style.display = 'flex'
+                target_bound = event.target.getBoundingClientRect()
+                console.log(target_bound.left, target_bound.top)
+                stars_wrapper.style.left = target_bound.left + 'px'
+                stars_wrapper.style.top = event.pageY - target_bound.height + 'px'
+
+            });
+            stars_wrapper.addEventListener('mouseleave', event => {
+                stars_wrapper.style.display = 'none'
+            })
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var rate_text = document.querySelector('.span_rate');
+            changeColor(Number(rate_text.textContent), rate_text);
+        });
+
+        function changeColor(val, rate_text) {
+            var color = "green";
+            if (val > 4 && val < 7) {
+                color = "yellow";
+            } else if (val <= 4) {
+                color = "red";
+            }
+            rate_text.style.color = color;
+        }
+    </script>
+    <script>
+        document.getElementById('scrollButton').addEventListener('click', function () {
+            document.querySelector('#targetDiv').scrollIntoView({behavior: 'smooth'});
+        });
+    </script>
+    <script> // работа с появлением мини окна персоны
+    document.addEventListener('DOMContentLoaded', function () {
+        ol()
+    });
+
+    timeout = setTimeout(() => {
+        console.log('Прошла 1 секунда')
+    }, 500)
+    clearTimeout(timeout);
+
+    function ol() {
+
+        var hint = document.createElement('div');
+        hint.className = "hint";
+        document.body.appendChild(hint);
+        var path = document.getElementsByClassName("title__person_list__person_name");
+        var i;
+        var timeout = 0
+        for (i = 0; i < path.length; i++) {
+            path[i].addEventListener('mouseenter', function (e) {
+                hint.innerText = ''
+                {#hint.style.display = 'inline-block';#}
+                var target = e.target
+                let bounds = e.target.getBoundingClientRect();
+                let width_target = e.target.offsetWidth
+                if (e.pageX + hint.offsetWidth < document.body.offsetWidth) {
+                    {#console.log(bounds.top + 10 + 'px')#}
+                    hint.style.top = e.pageY + 10 + 'px';
+                    hint.style.left = bounds.left - 300 - width_target / 2 + 'px';
+                }
+                timeout = setTimeout(() => {
+
+                    fetch(target.href + "/mini", {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            {#console.log(data)#}
+                            person = data.person
+                            hint.innerHTML = `
+                                <div style=" display: flex; gap: 5px; flex-direction: row;">
+
+                                    <div style="flex: 1; width: 100px">
+                                        <img src='${person.photo}' alt='${person.name}' style='width: 100px;'>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h3>${person.name}</h3>
+                                        <p>${person.age} лет</p>
+                                        <p>${person.sex}</p>
+                                    </div>
+                                </div>
+
+                                `;
+                            hint.style.display = 'inline-block';
+
+                        });
+                }, 500)
+
+            });
+            path[i].addEventListener('mouseleave', function () {
+                clearTimeout(timeout);
+                hint.style.display = 'none';
+            });
+        }
+    }
+    </script>
+    <style>
+        .hint {
+            display: none;
+            padding: 8px 8px 8px;
+            border-radius: 5px;
+            position: absolute;
+            width: 300px;
+        {#border: 4px solid #C2B1C4;#} background-color: white;
+            z-index: 9999999;
+            box-shadow: 0 0 10px rgba(194, 177, 196, 1);
+            animation: ani 0.5s forwards;
+        }
+
+        @keyframes ani {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 300px;
+            }
+        }
+    </style>
+    <style>
+        .title__main_wrapper {
+            display: flex;
+            gap: 30px;
+            flex-direction: row;
+            margin-top: 20px
+        }
+
+        .title__poster_info {
+            flex: 2;
+        }
+
+        .title__poster_info_wrapper {
+            display: flex;
+            gap: 15px;
+            flex-direction: row;
+        }
+
+        .title__info {
+            flex: 1;
+            background-color: #F2D0CE;
+            border-radius: 10px;
+
+        }
+
+        .title__info__user_buttons {
+            margin: 10px 0 10px;
+        }
+
+        .title__name_title {
+            min-width: 285px;
+            font-size: 44px;
+
+        }
+
+        .title__info__values {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .title__info__values_name {
+            flex: 2;
+        }
+
+        .title__info__values_value {
+            flex: 3;
+        }
+
+        .title__poster {
+            min-width: auto;
+            max-width: 300px;
+        }
+
+
+        .title__poster_watch {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            min-width: 100px;
+            max-width: 300px;
+        }
+
+        .title__info__watch_wrapper {
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #6B7A6F;
+            padding: 11px 15px 10px;
+            text-align: center;
+        }
+        .title__info__watch__title{
+            font-size: 30px;
+        }
+
+        .link_on_watch_buttons_wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 33px;
+        }
+        .link_watch_button_wrapper{
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .link_watch_button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 90px;
+            height: 50px;
+            width: 50px;
+
+        }
+
+        .title__info_description {
+
+        }
+
+        .title__persons_rate_wrapper {
+            flex: 1;
+            max-width: 230px;
+        }
+
+        .title__persons_wrapper {
+            margin-top: 10px;
+        }
+
+        .title__person_list {
+            list-style: none;
+        }
+
+        .title__person_list_element {
+            margin: 0;
+            padding: 0;
+        }
+
+        .title__person_list__person_name {
+            color: black;
+            text-decoration: none;
+
+        }
+
+        .title__person_list__person_name:hover {
+            color: #CD180E;
+        }
+
+        .title_rating_choose_menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .title_rating_text {
+            font-size: 25px;
+        }
+
+        .title_rating_wrapper {
+            justify-content: space-between;
+            position: absolute;
+            left: 10px;
+            top: 65px;
+            display: none;
+            padding: 5px 8px 5px;
+            background-color: #FBB89F;
+            border-radius: 10px;
+            align-items: center;
+            height: 100px;
+            width: 370px;
+            z-index: 100;
+        }
+
+        .text_rating_choose {
+            padding-left: 5px;
+            font-size: 35px;
+        }
+    </style>
+    <style>
+        .poster-container {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .poster-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .poster-item img {
+            width: 150px;
+            height: 275px;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .poster-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+            hyphens: none;
+        }
+
+        .poster-ratefilm {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 20%;
+        {#background-color: rgba(255,84,1, 0.9);#} background-color: rgba(219, 112, 147, 0.9);
+            color: black;
+            padding: 2px 2px 2px;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        {#border-bottom-right-radius: 90px;#}{#border-top-right-radius: 90px;#}
+        }
+
+        .poster-kprate {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+            position: absolute;
+            top: 5px;
+            left: 80px;
+            width: 20%;
+            background-color: rgba(255, 84, 1, 0.9);
+
+        {#background-color: rgba(255, 209, 218, 0.9);#} color: black;
+            padding: 2px 2px 2px;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        {#border-bottom-right-radius: 90px;#}{#border-top-right-radius: 90px;#}
+        }
+
+        .poster-imdbrate {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20%;
+            background-color: rgba(245, 197, 24, 0.9);
+        {#169, 242, 245#} color: black;
+            padding: 2px 2px 2px;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .title__rate_button_wrapper {
+            margin: 20px 0 20px;
+
+        }
+
+        .title__rate_button {
+            font-size: 30px;
+            align-content: center;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px 0;
+        {#background-color: palevioletred;#} box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+            overflow: hidden;
+
+            border-radius: 90px;
+        {#width: 70px;#}{#height: 70px;#}{#padding: 10px 10px;#} cursor: default;
+            color: black;
+            border-top: None;
+            text-decoration: none;
+
+            &:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+
+                border-radius: 0;
+                z-index: -2;
+            }
+
+            &:before {
+
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 100%;
+            {#background-color: #A4DC71;#} background-color: #6B7A6F;
+
+                color: white;
+                transition: all .3s;
+                border-radius: 0;
+                z-index: -1;
+            }
+
+            &:hover {
+                color: white;
+
+                &:before {
+                    width: 70%;
+                }
+            }
+        }
+
+        .title__rate_button.rate {
+            .user_rate {
+                color: white;
+                background-color: #CD180E;
+                border-radius: 90px;
+                width: 44px;
+                height: 44px;
+                display: flex;
+                justify-content: center;
+            }
+        }
+
+        .container_main {
+            background-color: white;
+        }
+
+        .svg_icon {
+
+        }
+
+        .svg_icon.active {
+            fill: white;
+        }
+    </style>
+{% endblock %}
+
+{% block desktop_content %}
+
+    <div class="title__main_wrapper">
+        <div class="title__poster_info">
+            <div class="title__poster_info_wrapper">
+                <div class="title__info">
+                    <h2 class="title__name_title">{{ dict_title.name }} ({{ dict_title.year_create }})</h2>
+                    <div class="title__info__user_buttons">
+                        {#                    {% if user_auth %}#}
+                        {#                        <div class="buttons_flex">#}
+                        {#                            <a class="title__button" id="field_to_favorite" data-value="0">#}
+                        {#                                <span class="userDo__crown" id="icon_switch_favorite">#}
+                        {#                                    <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>#}
+                        {#                                </span>#}
+                        {#                                Избранное</a>#}
+                        {#                            <a class="title__button" id="field_to_pin" data-value="0">#}
+                        {#                                <span class="userDo__bookmark" id="icon_switch_bookmark">#}
+                        {#                                    <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z"/></svg>#}
+                        {#                                </span>#}
+                        {#                                Буду смотреть</a>#}
+                        {#                        </div>#}
+                        {##}
+                        {#                    {% endif %}#}
+                    </div>
+                    <div>
+                        {% if user_auth %}
+                            {#                            {% if not user_rate %}#}
+                            {#                        <div class="text_rating">#}
+                            {#                            <h3><b>Ваша оценка</b> <span class="choose_rate"></span></h3>#}
+                            {#                        </div>#}
+                            <style>
+                                .star {
+                                    margin: 0 0 0;
+                                    padding: 5px 5px 5px;
+                                }
+                            </style>
+                            {#                                <div class="title__rate_button_wrapper" >#}
+                            {#                                #}
+                            {#                                    {% if not user_rate %}#}
+                            {#                                        <a class="title__rate_button" id="rate_button_wrapper">Оценить</a>#}
+                            {#                                    {% else %}#}
+                            {#                                        <a class="title__rate_button rate" id="rate_button_wrapper">#}
+                            {#                                                <div>Изменить оценку</div>#}
+                            {#                                                <div class="user_rate" id="field_change_rate">{{ user_rate|floatformat:"0" }}</div>#}
+                            {#                                        </a>#}
+                            {#                                    {% endif %}#}
+                            {#                                </div>#}
+                            <div class="title__rate_button_wrapper">
+                                <a class="title__rate_button {% if user_rate %}rate{% endif %}"
+                                   id="rate_button_wrapper">
+                                    {% if not user_rate %}
+                                        <div>Оценить</div>
+                                    {% else %}
+                                        <div>Изменить оценку</div>
+                                    {% endif %}
+                                    <div class="user_rate" id="field_change_rate">
+                                        {% if user_rate %}{{ user_rate|floatformat:"0" }}{% endif %} </div>
+                                </a>
+                            </div>
+                            <div class="title_rating_wrapper" id='stars_wrapper'>
+                                <div class="title_rating_choose_menu">
+                                    <div class="title_rating_text">Оценить</div>
+                                    <div class="title_rating" style="cursor: pointer;"
+                                         data-movieid={{ dict_title.id }}>
+                                        <span class="star" data-value="0">☆</span><span class="star"
+                                                                                        data-value="1">☆</span>
+                                        <span class="star" data-value="2">☆</span><span class="star"
+                                                                                        data-value="3">☆</span>
+                                        <span class="star" data-value="4">☆</span><span class="star"
+                                                                                        data-value="5">☆</span>
+                                        <span class="star" data-value="6">☆</span><span class="star"
+                                                                                        data-value="7">☆</span>
+                                        <span class="star" data-value="8">☆</span><span class="star"
+                                                                                        data-value="9">☆</span>
+                                        <input type="hidden" name="rating" value="-1">
+                                    </div>
+                                </div>
+                                <div class="text_rating_choose">
+                                    <span class="choose_rate"></span>
+                                </div>
+                            </div>
+
+                            {#                        {% else %}#}
+                            {#                            <h3><b>Ваша оценка</b> <span class="span_rate">{{ user_rate|floatformat:"0" }}</span></h3>#}
+                            {#                        {% endif %}#}
+                        {% else %}
+                            <h3>Зарегистрируйтесь, чтобы оценить</h3>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if dict_title.rate_film %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>RATEFILM</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.rate_film }}</div>
+                            </div>
+                        {% endif %}
+                        {% if dict_title.kp_rate %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Кинопоиск</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.kp_rate }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if dict_title.imdb_rate %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>imdb</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.imdb_rate }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if countries %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Страны</h6></div>
+                                <div class="title__info__values_value">{% for country in countries %}
+                                    {{ country.name }} {% endfor %}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if genres %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Жанры</h6></div>
+                                <div class="title__info__values_value">{% for genre in genres %}
+                                    {{ genre.name }} {% endfor %}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if dict_title.age_rating %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Возрастное ограничение</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.age_rating }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if dict_title.type_name %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>тип</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.type_name }}</div>
+                            </div>
+                        {% endif %}
+                        {% if dict_title.movie_length %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Продолжительность</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.movie_length }} минут</div>
+                            </div>
+                        {% endif %}
+                        {% if dict_title.total_series_length %}
+                            <div class="title__info__values">
+                                <div class="title__info__values_name"><h6>Количество серий</h6></div>
+                                <div class="title__info__values_value">{{ dict_title.total_series_length }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="title__poster_watch">
+                    <img class="title__poster" src="{{ dict_title.poster }}" alt="{{ dict_title.name }}">
+                    {% if user_auth %}
+                        <div class="buttons_flex">
+                            <a class="title__button" id="field_to_favorite" data-value="0">
+                                <span class="userDo__crown" id="icon_switch_favorite">
+                                    <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                         viewBox="0 0 24 24" width="26" height="26"><path
+                                            d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>
+                                </span>
+                                Любимое
+                                {#                                Избранное#}
+                            </a>
+                            <a class="title__button" id="field_to_pin" data-value="0">
+                                <span class="userDo__bookmark" id="icon_switch_bookmark">
+                                    <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                         viewBox="0 0 24 24" width="26" height="26"><path
+                                            d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z"/></svg>
+                                </span>
+                                Закрепить</a>
+                        </div>
+
+                    {% endif %}
+                    <div class="title__info__watch_wrapper">
+                        <div class="title__info__watch__title">Просмотр</div>
+                        <div class="link_on_watch_buttons_wrapper">
+                            <div class="link_watch_button_wrapper">
+                                <a class="link_watch_button" href="https://rutube.ru/search/?query={{ dict_title.name }}">
+                                    <svg width="30" height="30" viewBox="0 0 17 15" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9.24517 9.00647H3.43209V6.67665H9.24517C9.58472 6.67665 9.82082 6.73659 9.93931 6.84127C10.0578 6.94596 10.1312 7.14011 10.1312 7.42373V8.26028C10.1312 8.55911 10.0578 8.75326 9.93931 8.85794C9.82082 8.96263 9.58472 9.00736 9.24517 9.00736V9.00647ZM9.64397 4.48014H0.966797V14.4436H3.43209V11.2021H7.97538L10.1312 14.4436H12.8918L10.515 11.1869C11.3913 11.0553 11.7847 10.7834 12.1093 10.3351C12.4338 9.88686 12.5965 9.1702 12.5965 8.21376V7.46667C12.5965 6.89943 12.5372 6.45118 12.4338 6.10761C12.3303 5.76405 12.1535 5.46522 11.9024 5.1968C11.6371 4.94271 11.3417 4.76376 10.9871 4.64387C10.6326 4.53919 10.1896 4.47925 9.64397 4.47925V4.48014Z"
+                                              fill="#100943"></path>
+                                        <path d="M14.7866 4.4792C15.8326 4.4792 16.6805 3.63095 16.6805 2.58457C16.6805 1.5382 15.8326 0.689941 14.7866 0.689941C13.7405 0.689941 12.8926 1.5382 12.8926 2.58457C12.8926 3.63095 13.7405 4.4792 14.7866 4.4792Z"
+                                              fill="#ED143B"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="link_watch_button_wrapper">
+                                <a class="link_watch_button" href="https://kinopoisk.film/{% if dict_title.is_film %}film{% else %}series{% endif %}/{{ dict_title.id }}/">
+                                    <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"/></svg>
+                                </a>
+                            </div>
+                            <div class="link_watch_button_wrapper">
+                                <a class="link_watch_button" href="https://vkvideo.ru/video{{ dict_title.oid_link }}_{{ dict_title.id_link }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" width="26" height="26">
+                                    <g>
+                                        <path d="M22.316,1.684C20.632,0,17.921,0,12.5,0h-1C6.079,0,3.368,0,1.684,1.684C0,3.368,0,6.079,0,11.5v1   c0,5.421,0,8.131,1.684,9.816S6.079,24,11.5,24h1c5.421,0,8.131,0,9.816-1.684C24,20.632,24,17.921,24,12.5v-1   C24,6.079,24,3.368,22.316,1.684z M19.503,17h-1.75c-0.667,0-0.863-0.532-2.05-1.719c-1.039-1.001-1.484-1.131-1.743-1.131   c-0.353,0-0.458,0.1-0.458,0.6v1.569c0,0.43-0.137,0.681-1.25,0.681c-1.854,0-3.892-1.126-5.339-3.202   c-2.17-3.041-2.763-5.34-2.763-5.803c0-0.26,0.1-0.495,0.6-0.495h1.751c0.447,0,0.615,0.196,0.783,0.68   c0.856,2.493,2.3,4.672,2.893,4.672c0.222,0,0.324-0.103,0.324-0.667V9.608c-0.065-1.186-0.696-1.284-0.696-1.706   c0-0.195,0.167-0.402,0.445-0.402h2.751c0.371,0,0.5,0.198,0.5,0.643v3.467c0,0.37,0.161,0.5,0.272,0.5   c0.223,0,0.408-0.13,0.816-0.538c1.261-1.409,2.151-3.578,2.151-3.578c0.112-0.26,0.316-0.495,0.762-0.495h1.75   c0.529,0,0.641,0.272,0.529,0.643c-0.223,1.02-2.355,4.023-2.355,4.023c-0.186,0.297-0.26,0.445,0,0.779   c0.186,0.26,0.797,0.779,1.205,1.261c0.752,0.846,1.319,1.559,1.477,2.051C20.254,16.75,20.003,17,19.503,17z"/>
+                                    </g>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="title__info_description">
+                <p>{{ dict_title.description }}</p>
+            </div>
+        </div>
+        <div class="title__persons_rate_wrapper">
+            <div>
+
+            </div>
+            <div class="title__persons_wrapper">
+
+                {% for key, person_list in persons.items %}
+                    <h6>{{ key }}</h6>
+                    <nav>
+                        <ul class="title__person_list">
+                            {% for person in person_list %}
+                                <li class="title__person_list_element"><a class="title__person_list__person_name"
+                                                                          href="/person/{{ person.person_id }}">{{ person.person_name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </nav>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+    <style>
+
+
+        .vk_video_player {
+            display: flex;
+            justify-content: center;
+            background-color: #F2D0CE;
+            padding: 10px 0 10px;
+            border-radius: 10px;
+        }
+    </style>
+
+    <div class="title__player">
+        {#        <div>Просмотр</div>#}
+        {% if dict_title.oid_link %}
+            <div class="vk_video_player">
+                <iframe src="https://vkvideo.ru/video_ext.php?oid={{ dict_title.oid_link }}&id={{ dict_title.id_link }}&hd=2&autoplay=0"
+                        width="600" height="338"
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+                {#        <iframe src="https://vkvideo.ru/video_ext.php?oid=-220018529&id=456243546&hd=2&autoplay=1" width="853" height="480" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>#}
+            </div>
+        {% endif %}
+    </div>
+    <div class="title__sap_wrapper">
+        {% if seq_and_preq %}
+            <h2>Сиквелы и прикелы</h2>
+        {% endif %}
+        <div class="title__titles_auto_grid">
+            {% for title in seq_and_preq %}
+
+                <div class="poster-item">
+                    <a href="/title/{{ title.id }}">
+                        <img src="{{ title.poster }}" alt="{{ title.name }}">
+                        <div class="poster-title">{{ title.name }}</div>
+
+
+                    </a>
+                </div>
+                {#                <div class="style_title">#}
+                {#                    <div>#}
+                {#                        <img src="{{ movie.poster }}" alt="{{ movie.name }}" style="max-width: 100%;"#}
+                {#                             class="poster-image">#}
+                {#                        <a href="/title/{{ movie.id|add:0 }}"> {{ movie.name }}</a>#}
+                {#                    </div>#}
+                {#                </div>#}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="title__grid_wrapper">
+        {% if similars %}
+            <h2>Похожие</h2>
+        {% endif %}
+        <div class="title__titles_auto_grid">
+            {% for title in similars %}
+                <div class="poster-item">
+                    <a href="/title/{{ title.id }}">
+                        <img src="{{ title.poster }}" alt="{{ title.name }}">
+                        <div class="poster-title">{{ title.name }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+        .title__button {
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+            border-radius: 90px;
+            padding: 10px 10px;
+            cursor: default;
+            color: black;
+            border-top: None;
+            text-decoration: none;
+            &.active {
+                background-color: #CD180E;
+                color: white;
+            }
+            &.active:hover {
+                background-color: #a6150d;
+                color: #cacaca;
+            }
+            &:hover {
+                color: gray;
+                background-color: #f3f0ef;
+            }
+        }
+
+        .buttons_flex {
+            display: flex;
+            flex-direction: row;
+        {#gap: 5px;#}
+        }
+    </style>
+    <style>
+        .title__review__wrapper {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: auto 570px auto;
+            gap: 20px
+        }
+
+        .title__review__left_column {
+            flex: 1;
+        }
+
+        .title__review__right_column {
+            top: 75px;
+            flex: 1;
+            height: 200px;
+            position: sticky;
+        }
+
+        .title__reviews__for_watch {
+            flex: 3;
+            align-items: center;
+
+            overflow-y: auto;
+
+        }
+        .User__review__name_of_you_review{
+            font-size: 30px;
+        }
+        .User__review {
+            background-color: #F2D0CE;
+            border-radius: 21px;
+            margin-bottom: 20px;
+            padding: 10px 10px 20px;
+            width: 550px;
+
+        }
+        .User__review__nickname{
+            font-size: 30px;
+            width: 240px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .User__review__date{
+            font-size: 30px;
+        }
+
+        .User__review__title {
+            margin: 10px auto 10px;
+            text-align: center;
+        }
+
+        .title__written_reviews_wrapper {
+            margin-bottom: 20px;
+        }
+
+        .User__review__texttitle {
+            margin: 10px auto 10px;
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            height: 30px;
+            font-family: inherit;
+            left: 0;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #bdbdbd;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .User__review__maintext {
+            margin: 10px auto 10px;
+            border-radius: 5px;
+
+        }
+
+        .User__review__button {
+            border-radius: 90px;
+            background-color: gray;
+        }
+
+        .User__review__button {
+            background-color: palevioletred;
+            border-radius: 90px;
+            padding: 10px 10px;
+            cursor: default;
+            color: black;
+            border-top: None;
+            text-decoration: none;
+        }
+
+        .User__review__button:hover {
+            color: gray;
+            background-color: pink;
+        }
+
+        .User__review__select_type {
+            display: block;
+            font-size: 13px;
+            color: #444;
+            line-height: 1.3;
+            padding: .6em 1.4em .5em .8em;
+            height: 30px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 10px;
+            border: 1px solid #aaa;
+            box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+            border-radius: .5em;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat, repeat;
+            background-position: right .7em top 50%, 0 0;
+            background-size: .65em auto, 100%;
+
+        }
+
+        .link_to_reviews {
+            background-color: #CD180E;
+            color: white;
+            padding: 10px 10px 10px;
+            text-decoration: none;
+            font-size: 20px;
+            border-radius: 90px;
+        }
+
+        .link_to_reviews:hover {
+            color: black;
+            background-color: #dfa9bb;
+        }
+
+        .link {
+            text-decoration: none;
+            color: black;
+        }
+
+        .User__review__reactions {
+            display: flex;
+            flex-direction: row;
+            justify-content: right;
+            gap: 5px;
+        }
+
+        .User__review__reaction {
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+
+            &.like {
+                background-color: #6B7A6F;
+                {#background-color: #1a8c91;#}
+                color: white;
+            }
+
+            &.dislike {
+                background-color: #CD180E;
+                color: white;
+            }
+
+            .svg_reaction {
+                fill: white;
+            }
+        }
+        .red_link{
+            color: black;
+            text-decoration: none;
+            &:hover{
+                color: #CD180E;
+            }
+        }
+
+    </style>
+    <div class="title__review__wrapper">
+        <div class="title__review__left_column">
+
+        </div>
+        <div class="title__reviews__for_watch">
+
+            <div class="title__written_reviews_wrapper">
+                {% for review in reviews %}
+                    <div class="User__review">
+                        <div style="display:flex; justify-content: space-between;">
+                            <a href="/accounts/profile/{{ review.profile_hash_user_id }}" class="red_link">
+                                <div class="User__review__nickname">{{ review.nickname }}</div>
+                            </a>
+                            <div class="User__review__date">{{ review.date_review }}</div>
+                        </div>
+                        <a href="/accounts/profile/{{ review.profile_hash_user_id }}/review/{{ dict_title.id }}"
+                           class="red_link">
+                            <h5>{{ review.title_name }}</h5>
+                            <p>{{ review.title_content }}...</p>
+                            {% if not review.block_account %}
+                                <div class="User__review__reactions">
+                                    <div class="User__review__reaction like">
+                                        {{ review.count_like }}
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="User__review__reaction dislike">
+                                        {{ review.count_dislike }}
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                        </svg>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </a>
+
+                    </div>
+                {% endfor %}
+            </div>
+            {% if user_auth and not have_review %}
+                <div class="User__review" id="container_review">
+                    <h3 class="User__review__title">Написать рецензию</h3>
+                    <h5>Тип рецензии</h5>
+                    <select class="User__review__select_type" id="SelectTypereview">
+                        <option value="">-- Выберите тип --</option>
+                        <option value="1">Положительное</option>
+                        <option value="2">Нейтральная</option>
+                        <option value="3">Отрицательная</option>
+                    </select>
+
+                    <h5>Заголовок</h5>
+                    <div>
+                        <input type="text" size="50" id="title_review" class="User__review__texttitle">
+                    </div>
+
+                    <h5>Текст рецензии</h5>
+                    <textarea name="comment" rows="10" cols="50" class="User__review__maintext"
+                              id="review_textarea"></textarea>
+                    <a class="User__review__button" id="Postreview">
+                        Отправить
+                    </a>
+                </div>
+            {% elif user_review %}
+                {% for review in user_review %}
+                    <div class="User__review">
+                        <div class="User__review__name_of_you_review">Ваша рецензия</div>
+                        <div style="display:flex; justify-content: space-between">
+                            <a href="/accounts/profile/{{ review.profile_hash_user_id }}" class="red_link">
+                                <div class="User__review__nickname">{{ review.nickname }}</div>
+                            </a>
+                            <div class="User__review__date">{{ review.date_review }}</div>
+                        </div>
+                        <a href="/accounts/profile/{{ review.profile_hash_user_id }}/review/{{ dict_title.id }}"
+                           class="red_link">
+                            <h5>{{ review.title_name }}</h5>
+                            <p>{{ review.title_content }}...</p>
+                            {% if not review.block_account %}
+                                <div class="User__review__reactions">
+                                    <div class="User__review__reaction like">
+                                        {{ review.count_like }}
+
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                                 viewBox="0 0 24 24" width="26" height="26">
+                                                <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                            </svg>
+                                    </div>
+                                    <div class="User__review__reaction dislike">
+                                        {{ review.count_dislike }}
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </a>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="title__review__right_column">
+            <div class="title__review__info">
+                <a class="link_to_reviews" href="reviews?page=1">Все рецении</a>
+            </div>
+        </div>
+    </div>
+    {#    <iframe width="864" height="486" src="https://rutube.ru/video/cb1154d40a23559d06578dbf16b22c96" frameBorder="0" allow="clipboard-write; autoplay" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>  <p><a href="https://rutube.ru/video/cb1154d40a23559d06578dbf16b22c96/">«Тотальный футбол»: топовый дебют Миранчука, как поменять наш футбол – реформы Гогниева</a> от <a href="//rutube.ru/metainfo/tv/23137/">Тотальный футбол</a> на <a href="https://rutube.ru/">RUTUBE</a>#}
+{% endblock %}
+
+{% block mobile_head %}
+    <style>
+        .link {
+            color: black;
+            text-decoration: none;
+        }
+
+        .mobile_title_wrapper {
+            padding: 10px 10px 10px;
+        }
+
+        .mobile_title__name {
+            font-size: 30px;
+        }
+
+        .mobile_title__info {
+            width: 145px;
+        }
+
+        .mobile_title__info__rates {
+            margin-bottom: 10px;
+        }
+
+        .mobile_title__poster_info_wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .mobile_mini_user_rate_container {
+            position: absolute;
+            bottom: 10px;
+            left: 140px;
+            background-color: #6B7A6F;
+            color: white;
+            box-shadow: 0 0 10px rgb(0, 0, 0);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            font-size: 35px;
+            border-radius: 90px;
+            justify-content: center;
+
+            &.rate {
+                background-color: #CD180E;
+                color: white;
+                box-shadow: 0 0 10px rgb(255, 255, 255);
+
+            }
+        }
+
+        .mobile_poster {
+            width: 200px;
+        }
+        .mobile_poster_wrapper{
+            position: relative;
+        }
+
+        .mobile_title__info__rate_wrapper {
+            display: flex;
+            margin: 4px 0 4px;
+            border-radius: 90px;
+            flex-direction: row;
+            font-size: 14px;
+            justify-content: space-between;
+            padding: 0 15px 0;
+
+            &.rate_film {
+                color: white;
+                background-color: #CD180E;
+            }
+
+            &.kp_rate {
+                background-color: #FF5401;
+                color: white;
+            }
+
+            &.imdb_rate {
+                background-color: #F5C518;
+            }
+        }
+
+        .mobile_title__info__text_values {
+            font-size: 14px;
+        }
+
+        .mobile_title__info__text_values_name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .mobile_title__discription {
+            font-size: 14px;
+        }
+
+        .mobile_title_actors_wrapper {
+            overflow-x: scroll;
+        }
+
+        .mobile_title_actors__container {
+
+            display: grid;
+            grid-gap: 10px;
+            grid-auto-flow: column;
+            grid-template-columns: repeat(8, 220px);
+            grid-template-rows: repeat(4, 75px);
+        {#word-break: break-all;#}
+        }
+
+        .mobile_title_actor_wrapper {
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+        }
+
+        .mobile_title_actor__info {
+            font-size: 14px;
+            text-overflow: ellipsis;
+        }
+
+        .mobile_title_actor__photo_img {
+            height: 75px;
+        }
+
+        .mobile_name_of_block {
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mobile_reviews__review_container {
+            padding: 5px 5px 5px;
+            background-color: #F2D0CE;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .mobile_reviews__review__title_name {
+            font-weight: bold;
+        }
+
+        .mobile_reviews__review__title_content {
+
+        }
+
+        .mobile_reviews__review__user_reactions {
+            justify-content: right;
+            display: flex;
+
+        }
+
+        .User__review__reaction {
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+
+            &.like {
+                background-color: #6B7A6F;
+                {#background-color: #1a8c91;#}
+                color: white;
+            }
+
+            &.dislike {
+                background-color: #CD180E;
+                color: white;
+            }
+
+            .svg_reaction {
+                fill: white;
+            }
+        }
+
+        .mobile_button_wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 10px;
+
+        }
+
+        .mobile_title__button {
+            text-align: center;
+            flex: 1;
+        {#background-color: palevioletred;#} box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+
+            border-radius: 90px;
+            padding: 4px 0 4px;
+            cursor: default;
+            color: black;
+            border-top: None;
+            text-decoration: none;
+
+            &.active {
+                background-color: #CD180E;
+                color: white;
+            }
+        }
+
+        .mobile_choose_rate_wrapper {
+            position: relative;
+            padding: 0 10px 0;
+            position: fixed;
+            z-index: 900;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: white;
+            align-content: center;
+
+            &.hide {
+                display: none;
+            }
+        }
+
+        .mobile_choose_rates_container {
+            padding: 0 50px 0;
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            gap: 50px;
+            overflow-y: scroll;
+
+
+        }
+
+        .mobile_choose_rates__rate_container {
+            flex: 1 1 0;
+            position: relative;
+
+            border-radius: 13124px;
+            z-index: 12;
+
+        }
+
+        .mobile_choose_rates__rate {
+            font-family: "Rouge Script";
+
+            padding: 0 10px 0;
+            font-size: 100px;
+
+        }
+
+        .mobile_choose_rates__rate_oreol {
+            position: absolute;
+            background-color: #F2D0CE;
+
+            width: 50px;
+            height: 50px;
+            top: 50px;
+            left: 10px;
+            border-radius: 200px;
+            z-index: -1;
+        }
+
+        .mobile_choose_rate__info {
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mobile_user_rate_container {
+            font-size: 20px;
+            margin: 10px 0 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px 5px;
+            border-radius: 90px;
+            background-color: #F2D0CE;
+        }
+
+        .mobile_user_rate__rate {
+            background-color: #CD180E;
+            color: white;
+            border-radius: 90px;
+        }
+
+        .mobile_choose_rate__cancel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', e => {
+            const field_favorite = document.getElementById('field_to_favorite');
+            const field_pin = document.getElementById('field_to_pin');
+            const icon_switch_bookmark = document.getElementById('icon_switch_bookmark');
+            const icon_switch_favorite = document.getElementById('icon_switch_favorite');
+
+            var ispin = {{ ispin }}
+            var isfavorite = {{ isfavorite }}
+            if (ispin === 1) {
+                change_view_bookmark(1)
+            } else {
+                change_view_bookmark(0)
+            }
+            if (isfavorite === 1) {
+                change_view_heart(1)
+            } else {
+                change_view_heart(0)
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            field_favorite.addEventListener("click", (event) => {
+                {#alert('asja')#}
+                if (isfavorite === 1) {
+                    var path_post = 'favoriteout'
+                    isfavorite = 0
+                } else {
+                    var path_post = 'favoriteit'
+                    isfavorite = 1
+                }
+                fetch(window.location.pathname + path_post + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                    })
+                    .then(data => {
+
+                    })
+                if (isfavorite === 1) {
+                    change_view_heart(1)
+                } else {
+                    change_view_heart(0)
+                }
+
+            });
+            field_pin.addEventListener("click", (event) => {
+                {#alert('asja')#}
+                if (ispin === 1) {
+                    var path_post = 'pinout'
+                    ispin = 0
+                } else {
+                    var path_post = 'pinit'
+                    ispin = 1
+                }
+                fetch(window.location.pathname + path_post + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                    })
+                    .then(data => {
+
+                    })
+                if (ispin === 1) {
+                    change_view_bookmark(1)
+                } else {
+                    change_view_bookmark(0)
+                }
+
+            });
+
+
+            function change_view_bookmark(change_type) {
+                if (change_type === 1) {
+                    text_update = `<svg class="svg_icon active" xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M2.849,23.55a2.954,2.954,0,0,0,3.266-.644L12,17.053l5.885,5.853a2.956,2.956,0,0,0,2.1.881,3.05,3.05,0,0,0,1.17-.237A2.953,2.953,0,0,0,23,20.779V5a5.006,5.006,0,0,0-5-5H6A5.006,5.006,0,0,0,1,5V20.779A2.953,2.953,0,0,0,2.849,23.55Z"/></svg>`
+                    field_pin.classList.add('active')
+                } else {
+                    text_update = `<svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z"/></svg>`
+                    field_pin.classList.remove('active')
+                }
+                icon_switch_bookmark.innerHTML = text_update
+
+            }
+
+            function change_view_heart(change_type) {
+                if (change_type === 1) {
+                    text_update = `<svg class="svg_icon active" xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z"/></svg>`
+                    field_favorite.classList.add('active')
+
+                } else {
+                    text_update = `<svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>`
+                    field_favorite.classList.remove('active')
+
+                }
+                icon_switch_favorite.innerHTML = text_update
+
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', e => {
+            const field_mobile_mini_user_rate_view = document.getElementById('mobile_mini_user_rate_view')
+            const field_mobile_choose_rate__cancel = document.getElementById('mobile_choose_rate__cancel')
+
+            const mobile_rating = document.querySelectorAll('.mobile_choose_rates__rate');
+            const field_mobile_choose_rate = document.getElementById('mobile_choose_rate');
+
+            mobile_rating.forEach(rate => {
+                rate.addEventListener('click', () => {
+                    title_send_rate(rate.dataset.value)
+                    field_mobile_choose_rate.classList.add('hide');
+                });
+            });
+            field_mobile_choose_rate__cancel.addEventListener('click', event => {
+                field_mobile_choose_rate.classList.add('hide');
+            })
+            field_mobile_mini_user_rate_view.addEventListener('click', event => {
+                field_mobile_choose_rate.classList.remove('hide');
+            })
+
+            function title_send_rate(rate) {
+                fetch(window.location.pathname + `rate/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({rating: Number(rate) - 1})
+                })
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(data => {
+                        field_mobile_mini_user_rate_view.innerText = `${rate}`
+                        field_mobile_mini_user_rate_view.classList.add('rate')
+                        {#stars_wrapper.style.display = 'none'#}
+                        {#field_change_rate.innerText = `${Number(value) + 1}`#}
+                        {#field_change_rate.classList.add('rate')#}
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        alert('Произошла ошибка при сохранении оценки. Попробуйте позже');
+                    });
+            }
+        })
+
+    </script>
+    <style>
+    .mobile__watch_links_wrapper{
+            padding: 10px 10px 10px;
+            background-color: #F2D0CE;
+            border-radius: 10px;
+        }
+        .mobile__watch_links__title{
+            font-size: 25px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .mobile__watch_links_container{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile__link_watch_button_wrapper{
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .mobile__link_watch_button{
+            background-color: white;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 90px;
+        }
+        .mobile_vk_video_player{
+            display: flex;
+            justify-content: center;
+            margin: 10px 0 10px;
+        }
+    </style>
+{% endblock %}
+{% block mobile_content %}
+    <div class="mobile_choose_rate_wrapper hide" id="mobile_choose_rate">
+        <div class="mobile_choose_rate__cancel" id="mobile_choose_rate__cancel">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1"
+                 x="0px" y="0px" viewBox="0 0 512.021 512.021" style="enable-background:new 0 0 512.021 512.021;"
+                 xml:space="preserve" width="24" height="24"><g><path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/></g></svg>
+        </div>
+        <div class="mobile_choose_rate_info_container">
+            <div class="mobile_choose_rate__info">
+                Выберите оценку
+            </div>
+            <div class="mobile_choose_rates_container">
+                {% for num in '1234567890' %}
+                    <div class="mobile_choose_rates__rate_container">
+                        <div class="mobile_choose_rates__rate"
+                             data-value="{% if num == '0' %}10{% else %}{{ num }}{% endif %}">
+                            {% if num == '0' %}
+                                10
+                            {% else %}
+                                {{ num }}
+                            {% endif %}
+
+
+                        </div>
+                        <div class="mobile_choose_rates__rate_oreol">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="mobile_title_wrapper">
+        <div class="mobile_title__name">
+            {{ dict_title.name }} ({{ dict_title.year_create }})
+        </div>
+        {% if user_auth %}
+            <div class="mobile_button_wrapper">
+                <a class="mobile_title__button" id="field_to_favorite" data-value="0">
+                    <span class="userDo__crown" id="icon_switch_favorite">
+                        <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                             viewBox="0 0 24 24" width="26" height="26"><path
+                                d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>
+                    </span>
+                    Любимое
+                    {#                                Избранное#}
+                </a>
+                <a class="mobile_title__button" id="field_to_pin" data-value="0">
+                    <span class="userDo__bookmark" id="icon_switch_bookmark">
+                        <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                             viewBox="0 0 24 24" width="26" height="26"><path
+                                d="M20.137,24a2.8,2.8,0,0,1-1.987-.835L12,17.051,5.85,23.169a2.8,2.8,0,0,1-3.095.609A2.8,2.8,0,0,1,1,21.154V5A5,5,0,0,1,6,0H18a5,5,0,0,1,5,5V21.154a2.8,2.8,0,0,1-1.751,2.624A2.867,2.867,0,0,1,20.137,24ZM6,2A3,3,0,0,0,3,5V21.154a.843.843,0,0,0,1.437.6h0L11.3,14.933a1,1,0,0,1,1.41,0l6.855,6.819a.843.843,0,0,0,1.437-.6V5a3,3,0,0,0-3-3Z"/></svg>
+                    </span>
+                    Закрепить</a>
+            </div>
+
+        {% endif %}
+        <div class="mobile_title__poster_info_wrapper">
+            <div>
+                <div class="mobile_poster_wrapper">
+                <img class="mobile_poster" src="{{ dict_title.poster }}" alt="{{ dict_title.name }}">
+                {% if user_auth %}
+                    <div class="mobile_mini_user_rate_container {% if user_rate %}rate{% endif %}" id="mobile_mini_user_rate_view">
+                        {% if user_rate %}{{ user_rate|floatformat:"0" }}{% else %}~{% endif %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="mobile_title__info">
+                <div class="mobile_title__info__rates">
+                    <div class="mobile_title__info__rate_wrapper rate_film">
+                        <div>RATEFILM</div>
+                        <div>{{ dict_title.rate_film }}</div>
+                    </div>
+                    <div class="mobile_title__info__rate_wrapper kp_rate">
+                        <div>Кинопоиск</div>
+                        <div>{{ dict_title.kp_rate }}</div>
+                    </div>
+                    <div class="mobile_title__info__rate_wrapper imdb_rate">
+                        <div>Imdb</div>
+                        <div>{{ dict_title.imdb_rate }}</div>
+                    </div>
+                </div>
+                <div class="mobile_title__info__text">
+
+
+                    {% if countries %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">Страны</div>
+                            <div class="mobile_title__info__text_values_value">{% for country in countries %}
+                                {{ country.name }} {% endfor %}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if genres %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">Жанры</div>
+                            <div class="mobile_title__info__text_values_value">{% for genre in genres %}
+                                {{ genre.name }} {% endfor %}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if dict_title.age_rating %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">Возрастное ограничение</div>
+                            <div class="mobile_title__info__text_values_value">{{ dict_title.age_rating }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if dict_title.type_name %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">тип</div>
+                            <div class="mobile_title__info__text_values_value">{{ dict_title.type_name }}</div>
+                        </div>
+                    {% endif %}
+                    {% if dict_title.movie_length %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">Продолжительность</div>
+                            <div class="mobile_title__info__text_values_value">{{ dict_title.movie_length }} минут</div>
+                        </div>
+                    {% endif %}
+                    {% if dict_title.total_series_length %}
+                        <div class="mobile_title__info__text_values">
+                            <div class="mobile_title__info__text_values_name">Количество серий</div>
+                            <div class="mobile_title__info__text_values_value">{{ dict_title.total_series_length }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div style=";height: 1px; width: 100%; background-color: black"></div>
+        <div class="mobile_title__discription">
+            {{ dict_title.description }}
+        </div>
+        {% if dict_title.oid_link %}
+            {% if user_auth %}
+            <div class="mobile_name_of_block">Вк Видео</div>
+            <div class="mobile_vk_video_player">
+                <iframe src="https://vkvideo.ru/video_ext.php?oid={{ dict_title.oid_link }}&id={{ dict_title.id_link }}&hd=4&autoplay=0"
+                        width="355" height="215"
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
+            {% else %}
+                <div class="mobile_name_of_block">Зарегестрируйтесь чтобы был плеер ВК ВИДЕО</div>
+            {% endif %}
+        {% endif %}
+    <div class="mobile__watch_links_wrapper">
+        <div class="mobile__watch_links__title">Просмотр</div>
+        <div class="mobile__watch_links_container">
+            <div class="mobile__link_watch_button_wrapper">
+                <a class="mobile__link_watch_button" href="https://rutube.ru/search/?query={{ dict_title.name }}">
+                    <svg width="30" height="30" viewBox="0 0 17 15" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.24517 9.00647H3.43209V6.67665H9.24517C9.58472 6.67665 9.82082 6.73659 9.93931 6.84127C10.0578 6.94596 10.1312 7.14011 10.1312 7.42373V8.26028C10.1312 8.55911 10.0578 8.75326 9.93931 8.85794C9.82082 8.96263 9.58472 9.00736 9.24517 9.00736V9.00647ZM9.64397 4.48014H0.966797V14.4436H3.43209V11.2021H7.97538L10.1312 14.4436H12.8918L10.515 11.1869C11.3913 11.0553 11.7847 10.7834 12.1093 10.3351C12.4338 9.88686 12.5965 9.1702 12.5965 8.21376V7.46667C12.5965 6.89943 12.5372 6.45118 12.4338 6.10761C12.3303 5.76405 12.1535 5.46522 11.9024 5.1968C11.6371 4.94271 11.3417 4.76376 10.9871 4.64387C10.6326 4.53919 10.1896 4.47925 9.64397 4.47925V4.48014Z"
+                              fill="#100943"></path>
+                        <path d="M14.7866 4.4792C15.8326 4.4792 16.6805 3.63095 16.6805 2.58457C16.6805 1.5382 15.8326 0.689941 14.7866 0.689941C13.7405 0.689941 12.8926 1.5382 12.8926 2.58457C12.8926 3.63095 13.7405 4.4792 14.7866 4.4792Z"
+                              fill="#ED143B"></path>
+                    </svg>
+                </a>
+            </div>
+            <div class="mobile__link_watch_button_wrapper">
+                <a class="mobile__link_watch_button" href="https://kinopoisk.film/{% if dict_title.is_film %}film{% else %}series{% endif %}/{{ dict_title.id }}/">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"/></svg>
+                </a>
+            </div>
+            <div class="mobile__link_watch_button_wrapper">
+            <a class="mobile__link_watch_button" href="https://vkvideo.ru/video{{ dict_title.oid_link }}_{{ dict_title.id_link }}">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" width="26" height="26">
+                <g>
+                    <path d="M22.316,1.684C20.632,0,17.921,0,12.5,0h-1C6.079,0,3.368,0,1.684,1.684C0,3.368,0,6.079,0,11.5v1   c0,5.421,0,8.131,1.684,9.816S6.079,24,11.5,24h1c5.421,0,8.131,0,9.816-1.684C24,20.632,24,17.921,24,12.5v-1   C24,6.079,24,3.368,22.316,1.684z M19.503,17h-1.75c-0.667,0-0.863-0.532-2.05-1.719c-1.039-1.001-1.484-1.131-1.743-1.131   c-0.353,0-0.458,0.1-0.458,0.6v1.569c0,0.43-0.137,0.681-1.25,0.681c-1.854,0-3.892-1.126-5.339-3.202   c-2.17-3.041-2.763-5.34-2.763-5.803c0-0.26,0.1-0.495,0.6-0.495h1.751c0.447,0,0.615,0.196,0.783,0.68   c0.856,2.493,2.3,4.672,2.893,4.672c0.222,0,0.324-0.103,0.324-0.667V9.608c-0.065-1.186-0.696-1.284-0.696-1.706   c0-0.195,0.167-0.402,0.445-0.402h2.751c0.371,0,0.5,0.198,0.5,0.643v3.467c0,0.37,0.161,0.5,0.272,0.5   c0.223,0,0.408-0.13,0.816-0.538c1.261-1.409,2.151-3.578,2.151-3.578c0.112-0.26,0.316-0.495,0.762-0.495h1.75   c0.529,0,0.641,0.272,0.529,0.643c-0.223,1.02-2.355,4.023-2.355,4.023c-0.186,0.297-0.26,0.445,0,0.779   c0.186,0.26,0.797,0.779,1.205,1.261c0.752,0.846,1.319,1.559,1.477,2.051C20.254,16.75,20.003,17,19.503,17z"/>
+                </g>
+                </svg>
+            </a>
+        </div>
+        </div>
+    </div>
+        {% if persons %}
+            <div class="mobile_name_of_block">Персоны</div>
+            <div class="mobile_title_actors_wrapper">
+                <div class="mobile_title_actors__container">
+                    {% for key, person_list in persons.items %}
+                        {% for person in person_list %}
+                            <a class="link" style="overflow: clip" href="/person/{{ person.person_id }}">
+                                <div class="mobile_title_actor_wrapper">
+
+                                    <div class="mobile_title_actor__photo">
+                                        <img class="mobile_title_actor__photo_img" src="{{ person.photo }}">
+                                    </div>
+                                    <div class="mobile_title_actor__info">
+                                        {{ person.person_name }}
+                                        <div>{{ key }}</div>
+                                        <div style="color: grey">{{ person.description }}</div>
+                                    </div>
+
+                                </div>
+                            </a>
+                        {% endfor %}
+
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        {% endif %}
+        <style>
+            .mobile_item_poster_wrapper {
+                position: relative;
+                display: inline-block;
+            }
+
+            .mobile_poster_img {
+                width: 125px;
+                height: 187px;
+                background-color: #ffffff;
+                object-fit: cover;
+                display: block; /* Чтобы убрать небольшой отступ снизу */
+            }
+
+            .mobile_poster_title {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                color: white;
+                font-size: 14px;
+                padding: 10px;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+
+            .rate_poster {
+                position: absolute;
+                padding: 2px 2px 2px;
+                color: black;
+            {#width: 50px;#} top: 5px;
+                box-sizing: border-box;
+                font-size: 12px;
+                border-radius: 90px;
+                text-align: center;
+                height: 20px;
+                width: 30px;
+                z-index: 100;
+
+                &.ratefilm {
+                    left: 2px;
+                    top: 2px;
+                    background-color: #CD180E;
+                    color: white;
+                }
+
+                &.kprate {
+                    background-color: rgb(255, 84, 1);
+                    left: 48px;
+                    top: 2px;
+                }
+
+                &.imdbrate {
+                    background-color: rgb(245, 197, 24);
+                    top: 2px;
+                    right: 2px;
+                }
+            }
+
+            .mobile_poster_container {
+                display: flex;
+                /*overflow-x: auto;*/
+                gap: 10px;
+                white-space: nowrap;
+                overflow-x: scroll;
+                overflow-y: hidden;
+
+                &::-webkit-scrollbar {
+                    width: 0;
+                    height: 0;
+                }
+
+                align-items: center;
+            }
+
+            .mobile_poster_container_wrapper {
+            }
+        </style>
+        {% if seq_and_preq %}
+            <div class="mobile_name_of_block">Сиквелы и приквелы</div>
+            <div class="mobile_poster_container_wrapper">
+                <div class="mobile_poster_container" id="poster-container">
+                    {% for title in seq_and_preq %}
+                        <div class="mobile_item_poster_wrapper">
+                            <a href="/title/{{ title.id }}">
+                                <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                     alt="{{ title.name }}">
+                                <div class="mobile_poster_title">{{ title.name }}</div>
+                                <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if similars %}
+            <div class="mobile_name_of_block">Похожие</div>
+            <div class="mobile_poster_container_wrapper">
+                <div class="mobile_poster_container" id="poster-container">
+                    {% for title in similars %}
+                        <div class="mobile_item_poster_wrapper">
+                            <a href="/title/{{ title.id }}">
+                                <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                     alt="{{ title.name }}">
+                                <div class="mobile_poster_title">{{ title.name }}</div>
+                                <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        <details class="mobile_details_wrapper">
+            <summary class="details__title">Рецензии</summary>
+
+            <div class="details__content">
+                <a class="mobile_link_to_reviews" href="reviews?page=1">Все рецензии</a>
+                <div class="mobile_reviews_wrapper">
+                    {% for review in reviews %}
+                        <div class="mobile_reviews__review_container">
+                            <div style="display:flex; justify-content: space-between">
+                                <a href="/accounts/profile/{{ review.profile_hash_user_id }}"
+                                   class="link">{{ review.nickname }}
+                                </a>
+                                <h4>{{ review.date_review }}</h4>
+                            </div>
+                            <a href="/accounts/profile/{{ review.profile_hash_user_id }}/review/{{ dict_title.id }}"
+                               class="link">
+                                <div class="mobile_reviews__review__title_name">{{ review.title_name }}</div>
+                                <div class="mobile_reviews__review__title_content">{{ review.title_content }}...</div>
+                                {% if not review.block_account %}
+                                    <div class="mobile_reviews__review__user_reactions">
+                                        <div class="User__review__reaction like">
+                                            {{ review.count_like }}
+                                            <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                                 viewBox="0 0 24 24" width="26" height="26">
+                                                <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="User__review__reaction dislike">
+                                            {{ review.count_dislike }}
+                                            <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                                 viewBox="0 0 24 24" width="26" height="26">
+                                                <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                            </svg>
+
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if user_auth and not have_review %}
+                    <div class="mobile_write_review_wrapper">
+                    <div class="change_review_content_wrapper" id="change_review_content_wrapper">
+                        <div class="review__container">
+                            <div class="review__change_header_description">Написать рецензию</div>
+
+                            <div class="review__change_header_description">Заголовок</div>
+                            <p><textarea class="review__input_field_title" id="header_input_field_title"></textarea></p>
+                            <div class="review__change_header_description">Тип рецензии</div>
+                            <div class="review__choose_type_wrapper">
+                                <a class="review_type_button positive" data-value="1">Положительная</a>
+                                <div style="width: 1px; background-color: black"></div>
+                                <a class="review_type_button neutral" data-value="2">Нейтральная</a>
+                                <div style="width: 1px; background-color: black"></div>
+                                <a class="review_type_button negative" data-value="3">Отрицательная</a>
+                            </div>
+
+                            <input type="hidden" id="review__value_select_type" value="">
+
+                            <div class="review__change_header_description">Основной текст</div>
+                            <p><textarea class="review__input_field_text" id="input_field_text"></textarea></p>
+                            <div class="review__submit_change_button" id="submit_change_button">Изменить</div>
+
+                        </div>
+                    </div>
+                </div>
+                {% elif user_review %}
+                    <div class="review__change_header_description">Ваша рецензия</div>
+                    {% for review in user_review %}
+                        <div class="mobile_reviews__review_container">
+                            <div style="display:flex; justify-content: space-between">
+                                <a href="/accounts/profile/{{ review.profile_hash_user_id }}"
+                                   class="link">{{ review.nickname }}
+                                </a>
+                                <h4>{{ review.date_review }}</h4>
+                            </div>
+                            <a href="/accounts/profile/{{ review.profile_hash_user_id }}/review/{{ dict_title.id }}"
+                               class="link">
+                                <div class="mobile_reviews__review__title_name">{{ review.title_name }}</div>
+                                <div class="mobile_reviews__review__title_content">{{ review.title_content }}...</div>
+                                {% if not review.block_account %}
+                                    <div class="mobile_reviews__review__user_reactions">
+                                        <div class="User__review__reaction like">
+                                            {{ review.count_like }}
+                                            <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                                 viewBox="0 0 24 24" width="26" height="26">
+                                                <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="User__review__reaction dislike">
+                                            {{ review.count_dislike }}
+                                            <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                                 viewBox="0 0 24 24" width="26" height="26">
+                                                <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                        </div>
+                    {% endfor %}
+                {% endif %}
+{#                <div class="change_review_content_wrapper">#}
+{#                    <div class="review__container">#}
+{#                        <div class="review__change_header_description">Вы уже написали рецензию на это произведение</div>#}
+{#                        <div class="review__change_header_description">(Изменить можно на аккаунте)</div>#}
+{##}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+
+        </details>
+    </div>
+    <style>
+    .change_review_content_wrapper{
+        margin-top: 100px;
+        display: block;
+    }
+    .review__input_field_title{
+        display: block;
+        width: 100%;
+
+        height: 50px;
+        padding: 5px 5px 5px;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    .review__input_field_text{
+        display: block;
+        width: 100%;
+        border-radius: 5px;
+        padding: 5px 5px 5px;
+        height: 200px;
+        resize: none;
+    }
+    .review__choose_type_wrapper{
+        display: flex;
+        flex-direction: row;
+        background-color: #c6c6c6;
+        border-radius: 90px;
+        {#padding: 5px 0 5px;#}
+
+    }
+    .review_type_button{
+        align-content: center;
+        text-align: center;
+        {#border-radius: 90px;#}
+        height: 30px;
+        font-size: 14px;
+        background-color: #c6c6c6;
+        flex: 1;
+        cursor: pointer;
+        color: black;
+        text-decoration: none;
+        &:hover{
+            color: black;
+        }
+         }
+    .review_type_button.negative{
+        border-top-right-radius: 90px;
+        border-bottom-right-radius: 90px;
+    }
+    .review_type_button.positive{
+        border-top-left-radius: 90px;
+        border-bottom-left-radius: 90px;
+    }
+    .review_type_button.active.negative{
+        background-color: #CD180E;
+        color: white;
+    }
+    .review_type_button.active.positive{
+        background-color: #6B7A6F;
+        color: white;
+    }
+    .review_type_button.active.neutral{
+        background-color: black;
+        color: white;
+    }
+    .review__change_header_description{
+        display: flex;
+        font-size: 20px;
+        justify-content: center;
+        font-weight: bold;
+        margin: 10px 0 10px;
+    }
+    .review__container{
+        border-radius: 20px;
+        background-color: #F2D0CE;
+        padding: 10px 10px 10px;
+    }
+    .review__submit_change_button{
+        padding: 5px 5px 5px;
+        background-color: #6B7A6F;
+        color: white;
+        text-align: center;
+        border-radius: 90px;
+        cursor: pointer;
+    }
+    .review__submit_change_button:hover{
+        background-color: rgba(107, 122, 111, 0.80);
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+            const field_change_review_content_wrapper = document.getElementById('change_review_content_wrapper')
+
+            const review_type_button = document.getElementsByClassName('review_type_button')
+            const review__value_select_type = document.getElementById('review__value_select_type')
+            document.querySelectorAll('.review_type_button').forEach(button => {
+                button.addEventListener('click', event=>{
+                    document.querySelectorAll('.review_type_button').forEach(button_to_close =>{
+                        button_to_close.classList.remove('active')
+                    });
+                    button.classList.add('active')
+                    review__value_select_type.value = event.target.dataset.value
+                })
+            })
+
+            const field_submit_change_button = document.getElementById('submit_change_button')
+
+            field_submit_change_button.addEventListener('click', event=>{
+                const dataToSend = {
+                    title: document.getElementById('header_input_field_title').value,
+                    type: document.getElementById('review__value_select_type').value,
+                    text: document.getElementById('input_field_text').value
+                };
+                if (dataToSend.title.length > 3 || dataToSend.type.length === 1 || dataToSend.text.length > 20){
+                    send_review(dataToSend)
+                }
+
+            });
+            function send_review(dataToSend){
+                fetch(window.location.pathname + "review/", {  // URL вашего представления (определите в urls.py)
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        field_change_review_content_wrapper.innerHTML = "<h3>Рецензия отправлена</h3>"
+                    })
+            }
+        })
+    </script>
+    <style>
+        .mobile_link_to_reviews{
+            display: flex;
+            justify-content: right;
+            color: black;
+            &:hover{
+                color: #CD180E;
+            }
+        }
+        .mobile_details_wrapper {
+            position: relative;
+            display: block;
+            max-width: 650px;
+            margin: 0 auto 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            transition: 0.3s;
+            overflow: hidden;
+        }
+
+        .mobile_details_wrapper::after {
+            position: absolute;
+            right: 24px;
+            top: 15px;
+            content: "";
+            display: block;
+            width: 14px;
+            height: 14px;
+            border-right: 3px solid #425995;
+            border-bottom: 3px solid #425995;
+            transform: rotate(-45deg);
+            transform-origin: center;
+            transition: .3s;
+        }
+
+        .mobile_details_wrapper[open]::after {
+            transform: rotate(45deg);
+        }
+
+        .mobile_details_wrapper[open] {
+            padding-bottom: 100px;
+        }
+
+        .mobile_details_wrapper[open] .details__title {
+            margin-bottom: 32px;
+        }
+
+        .details__title {
+            background: #fff;
+            border-radius: 5px;
+            padding: 12px 24px;
+            font-size: 20px;
+            cursor: pointer;
+            list-style: none;
+            font-weight: 700;
+            transition: .3s;
+        }
+
+        .details__title::-webkit-details-marker {
+            display: none;
+        }
+
+        .details__content {
+            font-size: 18px;
+            margin-bottom: -60px;
+        }
+
+        .details__content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .details__content p:first-child {
+            margin-top: 0;
+        }
+    </style>
+{% endblock %}

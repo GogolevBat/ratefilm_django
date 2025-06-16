@@ -1,0 +1,609 @@
+{% extends 'title/../universe/../universe/base.html' %}
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+    <style>
+        .link{
+            text-decoration: none;
+            color: black;
+            &:hover{
+                color: #CD180E;
+            }
+        }
+
+        .text_type_review{
+            padding: 0 20px 0;
+            display: flex;
+            font-size: 24px;
+            {#justify-content: center;#}
+
+            &.negative{
+                background-color: #CD180E;
+                color: white;
+            }
+            &.positive{
+                background-color: #6B7A6F;
+                color: white;
+            }
+            &.neutral{
+                background-color: black;
+                color: white;
+            }
+
+        }
+        .review_preview {
+            display: flex;
+            justify-content: center;
+            font-size: 40px;
+            padding: 20px 0 20px;
+        }
+
+        .user_reviews {
+            display: grid;
+            grid-template-columns: auto;
+            grid-auto-flow: row;
+            gap: 40px;
+            padding: 20px 20px 20px;
+            overflow: hidden;
+            word-break: normal;
+        }
+
+        .user_review_information_wrapper {
+            background-color: white;
+            display: block;
+            flex-grow: 1;
+            height: 300px;
+        }
+
+        .review_title_name {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .review_title_text {
+            font-size: 18px;
+
+            display: block;
+            word-break: break-word;
+            overflow: hidden;
+        }
+
+        .review_movie_name {
+            font-size: 30px;
+            height: 84px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .review_wrapper {
+            padding: 5px 5px 5px;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+
+        }
+
+        .top_titles_main_block {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            bottom: 50px;
+            left: 65px;
+            width: 71px;
+            height: 71px;
+            background-color: palevioletred;
+            color: #81d5f1;
+            border-radius: 20px;
+            transform: rotate(45deg);
+            z-index: 100;
+        }
+
+        .top_titles_main_block_text {
+            font-size: 100px;
+            font-family: "Rouge Script";
+            transform: rotate(-45deg);
+        }
+
+        .review_movie_information {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+
+        }
+
+        .reviews__review_information {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .choose_pages_wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .buttons_page{
+            background-color: #6B7A6F;
+            color: white;
+            font-size: 30px;
+            text-decoration: none;
+            width: 150px;
+            padding: 5px 5px 5px;
+            border-radius: 90px;
+            align-items: center;
+            align-content: center;
+            text-align: center;
+        }
+        .buttons_page:hover{
+            background-color: rgba(107, 122, 111, 0.9);
+            color: black;
+        }
+    </style>
+
+    {% if isshow %}
+
+    <div class="review_preview">
+        Рецензии "<a  style="color: black;" href="/accounts/profile/{{ profile_hash_user_id }}"> {{ nickname }}</a>"
+    </div>
+    <div class="choose_pages_wrapper">
+        {% if page_down > 0 %}
+            <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>
+                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                </svg>
+                Назад
+            </a>
+        {% endif %}
+        <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>
+            Вперед
+            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+            </svg>
+
+        </a>
+
+    </div>
+    <div class="user_reviews">
+        {% for review in reviews %}
+            <div class="review_wrapper">
+
+
+                <div class="info_fact__poster_item">
+                    <a href="/title/{{ review.id_title }}"><img src="{{ review.poster }}" alt="{{ review.name }}"></a>
+
+                    <div class="top_titles_main_block">
+                        <div class="top_titles_main_block_text">{{ review.user_rate }}</div>
+                    </div>
+
+                </div>
+                <div class="user_review_information_wrapper">
+                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 110px 185px; gap: 5px">
+                        <div>
+                            <div class="review_movie_name">{{ review.name }}</div>
+                            <div class="review_movie_information">
+                                <div class="list_titles__title_rates">
+                                    <div class="poster-ratefilm">{{ review.rate_film }}</div>
+                                    <div class="poster-kprate">{{ review.kp_rate }}</div>
+                                    <div class="poster-imdbrate">{{ review.imdb_rate }}</div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div style="overflow: scroll;">
+                            <a class="link" href="/accounts/profile/{{ profile_hash_user_id }}/review/{{ review.id_title }}">
+                                <div class="reviews__review_information">
+                                    {% if review.type_review == 1 %}
+                                        <div class="text_type_review positive">ПОЛОЖИТЕЛЬНАЯ</div>
+                                    {% elif review.type_review == 2 %}
+                                        <div class="text_type_review neutral">НЕЙТРАЛЬНАЯ</div>
+                                    {% else %}
+                                        <div class="text_type_review negative">ОТРИЦАТЕЛЬНАЯ</div>
+                                    {% endif %}
+                                    <div class="text_type_review">{{ review.date_review }}</div>
+                                </div>
+                                <div class="review_title_name">{{ review.title_name }}</div>
+
+                                <div class="review_title_text">{{ review.title_content }}</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+        <div style="display: flex; justify-content: center; height: 200px; font-size: 50px">Пользователь заблокировал аккаунт</div>
+    {% endif %}
+    {% if reviews|length > 2 %}
+            <div class="choose_pages_wrapper">
+        {% if page_down > 0 %}
+            <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>
+                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                </svg>
+                Назад
+            </a>
+        {% endif %}
+        <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>
+            Вперед
+            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+            </svg>
+
+        </a>
+
+    </div>
+        
+    {% endif %}
+
+
+    <style>
+        .list_titles_on_grid {
+            background-color: #f3dcf2;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            grid-template-rows: 225px 225px;
+            grid-auto-flow: row;
+            gap: 40px;
+            padding: 20px 20px 20px;
+            overflow: hidden;
+        }
+
+        .info_fact__poster_item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info_fact__poster_item img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .title_item_poster_info {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .poster-imdbrate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgb(245, 197, 24);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-kprate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 84, 1, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-ratefilm {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: #CD180E;
+            color: white;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-user_rate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .list_titles__title_rates {
+            display: flex;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__rates_wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__info {
+            position: relative;
+            display: block;
+            flex-grow: 1;
+            overflow: scroll;
+        }
+    </style>
+
+{% endblock %}
+
+{% block mobile_head %}
+
+     <style>
+
+        .mobile__review_wrapper{
+            padding: 5px 5px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .mobile__review__poster_item{
+            height: 100px;
+
+        }
+        .rate_poster{
+            position: absolute;
+            padding: 2px 2px 2px;
+            color: black;
+            {#width: 50px;#}
+            top: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+            border-radius: 90px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+            z-index: 100;
+            &.ratefilm{
+                left:2px;
+                top: 2px;
+                background-color: #CD180E;
+                color: white;
+            }
+            &.kprate{
+                background-color: rgb(255, 84, 1);
+                left: 48px;
+                top: 2px;
+            }
+            &.imdbrate{
+                background-color: rgb(245, 197, 24);
+                top: 2px;
+                right: 2px;
+            }
+             &.block{
+                position: static;
+            }
+        }
+        .mobile__review__title_info__rates{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+        .mobile__review__review_type{
+            display: flex;
+            justify-content: center;
+
+            &.negative{
+                background-color: #CD180E;
+                color: white;
+            }
+            &.positive{
+                background-color: #6B7A6F;
+                color: white;
+            }
+            &.neutral{
+                background-color: black;
+                color: white;
+            }
+
+        }
+        .mobile__review__review_container{
+            display: block;
+        }
+        .link{
+            color: black;
+            text-decoration: none;
+            &:hover{
+                color: black;
+            }
+        }
+        .mobile__review__title_info{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile_skipar{
+            height: 1px;
+            background-color: black;
+            margin: 20px 0 10px;
+        }
+        .mobile_name_of_block{
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .mobile_user_reviews_wrapper{
+            padding: 0 10px 0;
+        }
+        .choose_pages_wrapper{
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .buttons_page{
+            padding: 5px 5px 5px;
+            background-color: #6B7A6F;
+            color: white;
+            text-decoration: none;
+            border-radius: 90px;
+
+        }
+        .User__review__reactions {
+            display: flex;
+            flex-direction: row;
+            justify-content: right;
+            gap: 5px;
+        }
+
+        .User__review__reaction {
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+
+            &.like {
+                background-color: #6B7A6F;
+                {#background-color: #1a8c91;#}
+                color: white;
+            }
+
+            &.dislike {
+                background-color: #CD180E;
+                color: white;
+            }
+
+            .svg_reaction {
+                fill: white;
+            }
+        }
+    </style>
+    
+{% endblock %}
+
+{% block mobile_content %}
+    <div class="mobile_user_reviews_wrapper">
+        {% if isshow %}
+            <div class="mobile_name_of_block">
+        Рецензии "<a  class="link" href="/accounts/profile/{{ profile_hash_user_id }}"> {{ nickname }}</a>"
+    </div>
+            <div class="choose_pages_wrapper">
+                {% if page_down > 0 %}
+                    <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>
+                        <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                            <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                        </svg>
+                        Назад
+                    </a>
+                {% endif %}
+                <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>
+                    Вперед
+                    <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                        <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                    </svg>
+
+                </a>
+
+            </div>
+            {% for review in reviews %}
+            <div class="mobile_skipar"></div>
+            <div class="mobile__review_wrapper">
+                <a href="/title/{{ review.id_title }}" class="link">
+                    <div class="mobile__review__title_info">
+                        <img  class="mobile__review__poster_item" src="{{ review.poster }}" alt="{{ review.name }}">
+    
+    {#                    <div class="top_titles_main_block">#}
+    {#                        <div class="top_titles_main_block_text">{{ review.user_rate }}</div>#}
+    {#                    </div>#}
+                        <div>
+                            <div class="mobile__review__title_info__name">{{ review.name }}</div>
+                            <div class="mobile__review__title_info__add">
+                            <div class="mobile__review__title_info__rates">
+                                <div class="rate_poster ratefilm block">{{ review.rate_film }}</div>
+                                <div class="rate_poster kprate block">{{ review.kp_rate }}</div>
+                                <div class="rate_poster imdbrate block">{{ review.imdb_rate }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    {% if not review.block_account %}
+                        <div class="User__review__reactions">
+                            <div class="User__review__reaction like">
+                                {{ review.count_like }}
+                                <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                     viewBox="0 0 24 24" width="26" height="26">
+                                    <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                </svg>
+                            </div>
+                            <div class="User__review__reaction dislike">
+                                {{ review.count_dislike }}
+                                <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                     viewBox="0 0 24 24" width="26" height="26">
+                                    <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                </svg>
+
+                            </div>
+                        </div>
+                    {% endif %}
+                </a>
+                <div class="mobile__review__review_info">
+                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 100px 195px; gap: 5px">
+
+                        </div>
+                        <a class="link" style="overflow: scroll;" href="review/{{ review.id_title }}">
+                            <div>
+                                <div class="mobile__review__review_container">
+
+                                    {% if review.type_review == 1 %}
+                                        <div class="mobile__review__review_type positive" >ПОЛОЖИТЕЛЬНАЯ</div>
+                                    {% elif review.type_review == 2 %}
+                                        <div class="mobile__review__review_type neutral" >НЕЙТРАЛЬНАЯ</div>
+                                    {% else %}
+                                        <div class="mobile__review__review_type negative">ОТРИЦАТЕЛЬНАЯ</div>
+                                    {% endif %}
+                                    <div class="text_type_review">{{ review.date_review }}</div>
+                                </div>
+                                <div class="review_title_name">{{ review.title_name }}</div>
+
+                                <div class="review_title_text">{{ review.title_content }}</div>
+                            </div>
+                        </a>
+                </div>
+            </div>
+        {% endfor %}
+            {% if reviews|length > 2 %}
+            <div class="choose_pages_wrapper">
+            {% if page_down > 0 %}
+                <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_down }}'>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                        <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                    </svg>
+                    Назад
+                </a>
+            {% endif %}
+            <a class="buttons_page" href='/accounts/profile/{{ profile_hash_user_id }}/reviews?page={{ page_up }}'>
+                Вперед
+                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                </svg>
+
+            </a>
+    </div>
+
+    {% endif %}
+            
+        {% else %}
+            <div class="mobile_account_blocked_title">Аккаунт Заблокирован</div>
+        {% endif %}
+        
+
+    </div>
+{% endblock %}

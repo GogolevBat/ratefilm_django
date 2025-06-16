@@ -1,0 +1,579 @@
+{% extends 'title/../universe/../universe/base.html' %}
+{% block head %}
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const field_input_username = document.getElementById('id_username');
+            const field_input_email = document.getElementById('id_email');
+            const field_input_password = document.getElementById('id_password1');
+            const field_input_password_submit = document.getElementById('id_password2');
+
+    
+            {#const submit_button = document.querySelector('input[type = "submit"]')#}
+            const text_username = document.querySelector('label[for="id_username"]')
+            const text_email = document.querySelector('label[for="id_email"]')
+            const text_password = document.querySelector('label[for="id_password1"]')
+            const text_password_submit= document.querySelector('label[for="id_password2"]')
+            
+            {#const text_password = document.querySelector('label[for="id_email"]')#}
+            const field_to_submit = document.getElementById('field_to_submit')
+            const form_registration = document.getElementById('form_registration')
+            
+            
+            {#field_input_username.className = 'test_create'#}
+            {#submit_button.className = 'test_create'#}
+            field_input_username.className = 'input_field'
+            field_input_email.className = 'input_field'
+            field_input_password.className = 'input_field'
+            field_input_password_submit.className = 'input_field'
+            
+            field_input_username.placeholder = 'Введите логин'
+            field_input_email.placeholder = 'Введите почту'
+            field_input_password.placeholder = 'Введите пароль'
+            field_input_password_submit.placeholder = 'Введите пароль еще раз'
+            
+            
+            text_username.style.display = 'none'
+            text_email.style.display = 'none'
+            text_password.style.display = 'none'
+            text_password_submit.style.display = 'none'
+
+            
+            Array.from(document.getElementsByClassName('errorlist')).forEach( field=> {
+                field.style.display = 'none'
+            })
+            
+             field_to_submit.addEventListener("click", (event) => {
+                form_registration.submit()
+            });
+            
+            text_password.type = 'password';
+            text_password_submit.type = 'password';
+
+            field_input_username.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_email.focus()
+                }else if(event.which === 40){
+                    field_input_email.focus()
+                }
+            });
+
+            field_input_email.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_password.focus()
+                }else if(event.which === 38){
+                    field_input_username.focus()
+                }else if(event.which === 40){
+                    field_input_password.focus()
+                }
+            });
+
+            field_input_password.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_password_submit.focus()
+                }else if (event.which === 40){
+                    field_input_password_submit.focus()
+                }else if (event.which === 13){
+                    field_input_email.focus()
+                }
+            });
+
+            field_input_password_submit.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    form_registration.submit()
+                }else if(event.which === 38){
+                    field_input_password.submit()
+                }
+            });
+            {#var form_password = document.createElement('form');#}
+            {#form_password.setAttribute('onsubmit','return false;')#}
+            {#field_input_password.parentNode.insertBefore(form_password, field_input_password);#}
+            {#form_password.appendChild(field_input_password);#}
+            {#form_password.addEventListener('submit', event =>{#}
+            {#    event.preventDefault();#}
+            {#    field_input_password_submit.focus()#}
+            {# });#}
+            {#var form_password_submit = document.createElement('form');#}
+            {#form_password_submit.setAttribute('onsubmit','return false;')#}
+            {#field_input_password_submit.parentNode.insertBefore(form_password_submit, field_input_password_submit);#}
+            {#form_password_submit.appendChild(field_input_password_submit);#}
+            {#form_password_submit.addEventListener('submit', event =>{#}
+            {#    form_password.parentNode.insertBefore(field_input_password, form_password);#}
+            {#    form_password_submit.parentNode.insertBefore(field_input_password_submit, form_password_submit);#}
+            {#    event.preventDefault();#}
+            {#    form_registration.submit()#}
+            {# });#}
+            {#field_input_password.addEventListener("keydown", (event) => {#}
+            {#    if (event.key === 'Enter'){ #}
+            {#        field_input_password_submit.focus()#}
+            {#    }#}
+            {# });#}
+            {##}
+            {#field_input_password_submit.addEventListener("keydown", (event) => {#}
+            {#    if (event.key === 'Enter'){ #}
+            {#        form_registration.submit()#}
+            {#    }#}
+            {# });#}
+        });
+        
+
+    </script>
+    <style>
+    
+    .body{
+        {#background-image: linear-gradient(45deg, #DB7093FF, #A4DC71);#}
+        height: 100%;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <style>
+    .Login_style{
+        width: 300px;
+
+        overflow-y: scroll; 
+        position: fixed; 
+        margin: 10px auto 10px;
+        padding: 10px 15px 10px;
+        background-color: #F2D0CE;
+        box-shadow: 0 10px 7px #6B7A6F;
+        {#background-color: #FBCAB7	;#}
+        border-radius: 15px;
+        align-items: center;
+        {#border: 3px solid white;#}
+        justify-content: center;
+    }
+
+    .input_field{
+        display: block;
+        width: 100%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-family: inherit;
+        {#font-size: 1rem;#}
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #bdbdbd;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .button {
+        box-shadow: 0 5px 10px rgba(107, 122, 111, 0.40);
+
+    width: 100%;
+	display: inline-block;
+	padding: .75rem 1.25rem;
+	border-radius: 10rem;
+	color: black;
+	text-transform: uppercase;
+	font-size: 1rem;
+	letter-spacing: .15rem;
+	transition: all .3s;
+	position: relative;
+	overflow: hidden;
+	z-index: 1;
+	&:after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+
+		border-radius: 10rem;
+		z-index: -2;
+	}
+	&:before {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 0%;
+		height: 100%;
+		{#background-color: #A4DC71;#}
+        background-color: #CD180E;
+
+        color: white;
+		transition: all .3s;
+		border-radius: 10rem;
+		z-index: -1;
+	}
+	&:hover {
+		color: white;
+		&:before {
+			width: 100%;
+		}
+	}
+}
+
+    
+    
+    </style>
+    <div style=" display: flex;         /* Включаем Flexbox */
+        justify-content: center; /* Центрируем по горизонтали */
+        align-items: center;     /* Центрируем по вертикали (если нужно) */
+        padding: 20px;         /* Отступы */
+        min-height: 100vh;     /* Занимаем всю высоту экрана (для вертикального центрирования) */
+        ">
+        <div class='Login_style'>
+
+            <form method="POST" novalidate id="form_registration">
+                {% csrf_token %}
+                <h1 style="text-align: center">Sign Up</h1>
+                
+                {% for field in form %}
+                <p>
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+            
+                    {{ field.label_tag }} {{ field }}
+                </p>
+            
+                {% endfor %}
+                <a style="color: red;">{{ title }}</a>
+                <a class="button" type="submit" id="field_to_submit" style="text-align: center">Войти</a>
+                
+            </form>
+            <p>Уже зарегестрированы? <a href="{%url 'login' %}">login</a></p>
+
+        </div>
+    </div>
+{% endblock content%}
+
+{% block mobile_head %}
+{#    <script>#}
+{#        document.addEventListener('DOMContentLoaded', function () {#}
+{#            const field_input_username = document.getElementById('id_username');#}
+{#            const field_input_email = document.getElementById('id_email');#}
+{#            const field_input_password = document.getElementById('id_password1');#}
+{#            const field_input_password_submit = document.getElementById('id_password2');#}
+{##}
+{##}
+            {#const submit_button = document.querySelector('input[type = "submit"]')#}
+{#            const text_username = document.querySelector('label[for="id_username"]')#}
+{#            const text_email = document.querySelector('label[for="id_email"]')#}
+{#            const text_password = document.querySelector('label[for="id_password1"]')#}
+{#            const text_password_submit= document.querySelector('label[for="id_password2"]')#}
+{##}
+            {#const text_password = document.querySelector('label[for="id_email"]')#}
+{#            const field_to_submit = document.getElementById('field_to_submit')#}
+{#            const form_registration = document.getElementById('form_registration')#}
+{##}
+{##}
+            {#field_input_username.className = 'test_create'#}
+            {#submit_button.className = 'test_create'#}
+{#            field_input_username.className = 'input_field'#}
+{#            field_input_email.className = 'input_field'#}
+{#            field_input_password.className = 'input_field'#}
+{#            field_input_password_submit.className = 'input_field'#}
+{##}
+{#            field_input_username.placeholder = 'Введите логин'#}
+{#            field_input_email.placeholder = 'Введите почту'#}
+{#            field_input_password.placeholder = 'Введите пароль'#}
+{#            field_input_password_submit.placeholder = 'Введите пароль еще раз'#}
+{##}
+{##}
+{#            text_username.style.display = 'none'#}
+{#            text_email.style.display = 'none'#}
+{#            text_password.style.display = 'none'#}
+{#            text_password_submit.style.display = 'none'#}
+{##}
+{##}
+{#            Array.from(document.getElementsByClassName('errorlist')).forEach( field=> {#}
+{#                field.style.display = 'none'#}
+{#            })#}
+{##}
+{#             field_to_submit.addEventListener("click", (event) => {#}
+{#                 form_password.parentNode.insertBefore(field_input_password, form_password);#}
+{#                form_password_submit.parentNode.insertBefore(field_input_password_submit, form_password_submit);#}
+{##}
+{#                form_registration.submit()#}
+{#            });#}
+{##}
+{#            text_password.type = 'password';#}
+{#            text_password_submit.type = 'password';#}
+{##}
+{#            field_input_username.addEventListener("keydown", (event) => {#}
+{#                if (event.key === 'Enter'){#}
+{#                    field_input_email.focus()#}
+{#                }#}
+{#            });#}
+{##}
+{#            field_input_email.addEventListener("keydown", (event) => {#}
+{#                if (event.key === 'Enter'){#}
+{#                    field_input_password.focus()#}
+{#                }#}
+{#             });#}
+{##}
+{##}
+{#            var form_password = document.createElement('form');#}
+{#            form_password.setAttribute('onsubmit','return false;')#}
+{#            field_input_password.parentNode.insertBefore(form_password, field_input_password);#}
+{#            form_password.appendChild(field_input_password);#}
+{##}
+{#            form_password.addEventListener('submit', event =>{#}
+{#                event.preventDefault();#}
+{#                field_input_password_submit.focus()#}
+{#            });#}
+{##}
+{#            var form_password_submit = document.createElement('form');#}
+{#            form_password_submit.setAttribute('onsubmit','return false;')#}
+{#            field_input_password_submit.parentNode.insertBefore(form_password_submit, field_input_password_submit);#}
+{#            form_password_submit.appendChild(field_input_password_submit);#}
+{##}
+{#            form_password_submit.addEventListener('submit', event =>{#}
+{#                form_password.parentNode.insertBefore(field_input_password, form_password);#}
+{#                form_password_submit.parentNode.insertBefore(field_input_password_submit, form_password_submit);#}
+{#                event.preventDefault();#}
+{#                form_registration.submit()#}
+{#            });#}
+{##}
+{#        });#}
+{##}
+{##}
+{#    </script>#}
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const field_input_username = document.getElementById('id_username');
+            const field_input_email = document.getElementById('id_email');
+            const field_input_password = document.getElementById('id_password1');
+            const field_input_password_submit = document.getElementById('id_password2');
+
+    
+            {#const submit_button = document.querySelector('input[type = "submit"]')#}
+            const text_username = document.querySelector('label[for="id_username"]')
+            const text_email = document.querySelector('label[for="id_email"]')
+            const text_password = document.querySelector('label[for="id_password1"]')
+            const text_password_submit= document.querySelector('label[for="id_password2"]')
+            
+            {#const text_password = document.querySelector('label[for="id_email"]')#}
+            const field_to_submit = document.getElementById('field_to_submit')
+            const form_registration = document.getElementById('form_registration')
+            
+            
+            {#field_input_username.className = 'test_create'#}
+            {#submit_button.className = 'test_create'#}
+            field_input_username.className = 'input_field'
+            field_input_email.className = 'input_field'
+            field_input_password.className = 'input_field'
+            field_input_password_submit.className = 'input_field'
+            
+            field_input_username.placeholder = 'Введите логин'
+            field_input_email.placeholder = 'Введите почту'
+            field_input_password.placeholder = 'Введите пароль'
+            field_input_password_submit.placeholder = 'Введите пароль еще раз'
+            
+            
+            text_username.style.display = 'none'
+            text_email.style.display = 'none'
+            text_password.style.display = 'none'
+            text_password_submit.style.display = 'none'
+
+            
+            Array.from(document.getElementsByClassName('errorlist')).forEach( field=> {
+                field.style.display = 'none'
+            })
+            
+             field_to_submit.addEventListener("click", (event) => {
+                form_registration.submit()
+            });
+            
+            text_password.type = 'password';
+            text_password_submit.type = 'password';
+
+            field_input_username.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_email.focus()
+                }else if(event.which === 40){
+                    field_input_email.focus()
+                }
+            });
+
+            field_input_email.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_password.focus()
+                }else if(event.which === 38){
+                    field_input_username.focus()
+                }else if(event.which === 40){
+                    field_input_password.focus()
+                }
+            });
+
+            field_input_password.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    field_input_password_submit.focus()
+                }else if (event.which === 40){
+                    field_input_password_submit.focus()
+                }else if (event.which === 13){
+                    field_input_email.focus()
+                }
+            });
+
+            field_input_password_submit.addEventListener("keyup", (event) => {
+                if (event.which === 13){
+                    form_registration.submit()
+                }else if(event.which === 38){
+                    field_input_password.submit()
+                }
+            });
+            {#var form_password = document.createElement('form');#}
+            {#form_password.setAttribute('onsubmit','return false;')#}
+            {#field_input_password.parentNode.insertBefore(form_password, field_input_password);#}
+            {#form_password.appendChild(field_input_password);#}
+            {#form_password.addEventListener('submit', event =>{#}
+            {#    event.preventDefault();#}
+            {#    field_input_password_submit.focus()#}
+            {# });#}
+            {#var form_password_submit = document.createElement('form');#}
+            {#form_password_submit.setAttribute('onsubmit','return false;')#}
+            {#field_input_password_submit.parentNode.insertBefore(form_password_submit, field_input_password_submit);#}
+            {#form_password_submit.appendChild(field_input_password_submit);#}
+            {#form_password_submit.addEventListener('submit', event =>{#}
+            {#    form_password.parentNode.insertBefore(field_input_password, form_password);#}
+            {#    form_password_submit.parentNode.insertBefore(field_input_password_submit, form_password_submit);#}
+            {#    event.preventDefault();#}
+            {#    form_registration.submit()#}
+            {# });#}
+            {#field_input_password.addEventListener("keydown", (event) => {#}
+            {#    if (event.key === 'Enter'){ #}
+            {#        field_input_password_submit.focus()#}
+            {#    }#}
+            {# });#}
+            {##}
+            {#field_input_password_submit.addEventListener("keydown", (event) => {#}
+            {#    if (event.key === 'Enter'){ #}
+            {#        form_registration.submit()#}
+            {#    }#}
+            {# });#}
+        });
+        
+
+    </script>
+    <style>
+    .input_field{
+        display: block;
+        width: 100%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 0.75rem;
+        font-family: inherit;
+        {#font-size: 1rem;#}
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #bdbdbd;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .Login_style{
+        overflow-y: scroll;
+        margin: 10px auto 10px;
+        padding: 10px 15px 10px;
+        background-color: #F2D0CE;
+
+        {#background-color: #FBCAB7	;#}
+        border-radius: 15px;
+        align-items: center;
+        box-shadow: 0 10px 7px #6B7A6F;
+
+        {#border: 3px solid white;#}
+        justify-content: center;
+    }
+    .button {
+        box-shadow: 0 5px 10px rgba(107, 122, 111, 0.40);
+        width: 100%;
+        display: inline-block;
+        padding: .75rem 1.25rem;
+        border-radius: 10rem;
+        color: black;
+        text-transform: uppercase;
+        font-size: 1rem;
+        letter-spacing: .15rem;
+        transition: all .3s;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        &:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            border-radius: 10rem;
+            z-index: -2;
+        }
+        &:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            {#background-color: #A4DC71;#}
+            background-color: #CD180E;
+
+            color: white;
+            transition: all .3s;
+            border-radius: 10rem;
+            z-index: -1;
+        }
+        &:hover {
+            color: white;
+            &:before {
+                width: 100%;
+            }
+        }
+    }
+    </style>
+{% endblock %}
+
+{% block mobile_content %}
+    <div style=" display: flex;         /* Включаем Flexbox */
+        justify-content: center; /* Центрируем по горизонтали */
+        align-items: center;     /* Центрируем по вертикали (если нужно) */
+        padding: 20px;         /* Отступы */
+        min-height: 100vh;     /* Занимаем всю высоту экрана (для вертикального центрирования) */
+        ">
+        <div class='Login_style'>
+
+            <form method="POST" novalidate id="form_registration">
+                {% csrf_token %}
+                <h1 style="text-align: center">Sign Up</h1>
+
+                {% for field in form %}
+                <p>
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {{ field.label_tag }} {{ field }}
+                </p>
+
+                {% endfor %}
+                <a style="color: red;">{{ title }}</a>
+                <a class="button" type="submit" id="field_to_submit" style="text-align: center">Войти</a>
+
+            </form>
+            <p>Уже зарегестрированы? <a href="{%url 'login' %}">login</a></p>
+
+        </div>
+    </div>
+{% endblock %}

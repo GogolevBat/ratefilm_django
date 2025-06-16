@@ -1,0 +1,1095 @@
+{% extends 'title/../universe/../universe/base.html' %}
+{% block head %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const floating_window_additional_text = document.getElementById('floating_window_additional_text')
+            const nickname_field = document.getElementById('nickname_field')
+            const change_user_nickname = document.getElementById('change_user_nickname')
+            const field_change_user_block = document.getElementById('change_user_block')
+            const submit_button = document.getElementById('submit_nickname')
+            const cancel_button = document.getElementById('cancel_nickname')
+            const input_user_nickname = document.getElementById('input_user_nickname')
+            change_user_nickname.addEventListener('click', event => {
+                nickname_field.style.display = 'flex';
+                input_user_nickname.style.display = 'block'
+                floating_window_additional_text.innerText='(больше 3 символов)'
+                submit_button.addEventListener('click', submit_change_nickname);
+            });
+
+            cancel_button.addEventListener('click', event => {
+                nickname_field.style.display = 'none';
+                submit_button.removeEventListener('click',submit_change_user_block)
+                submit_button.removeEventListener('click', submit_change_nickname);
+
+            });
+
+
+            field_change_user_block.addEventListener('click', event=>{
+                nickname_field.style.display = 'flex';
+                input_user_nickname.style.display = 'none'
+                {% if isshow %}
+                    floating_window_additional_text.innerText='Заблокировать аккаунт?'
+                {% else %}
+                    floating_window_additional_text.innerText='Разблокировать аккаунт?'
+                {% endif %}
+                submit_button.addEventListener('click', submit_change_user_block);
+            })
+
+            function change_nickname(nickname, count) {
+                if (count > 3) {
+                    const not_succsesful_change_nickname = document.getElementById('not_succsesful_change_nickname')
+                    not_succsesful_change_nickname.style.display = 'block'
+                    return false;
+                } else {
+                    fetch(`/accounts/change/nickname?nickname=${nickname}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.status) {
+                                console.log('чтоо')
+                                return change_nickname(nickname, count + 1)
+                            }
+                        })
+                    return true;
+                }
+            }
+
+            function change_user_block(count){
+                if (count > 3) {
+                    const not_succsesful_change_nickname = document.getElementById('not_succsesful_change_nickname')
+                    not_succsesful_change_nickname.style.display = 'block'
+                    return false;
+                } else {
+                    fetch(`/accounts/change/block`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.status) {
+                                console.log('чтоо')
+                                return change_user_block(count)
+                            }
+                        })
+                    return true;
+                }
+            }
+
+            function submit_change_user_block(event){
+                var result = change_user_block(1)
+                console.log(result)
+                if (result) {
+                    nickname_field.style.display = 'none';
+                    submit_button.removeEventListener('click',submit_change_user_block)
+                    location.replace('/')
+                }
+            }
+            function submit_change_nickname(event){
+                    if (input_user_nickname.value.length > 3) {
+                        var result = change_nickname(input_user_nickname.value, 1)
+                        console.log(result)
+                        if (result) {
+                            nickname_field.style.display = 'none';
+                            submit_button.removeEventListener('click',submit_change_nickname)
+                            setTimeout(() => {location.reload()}, 100)
+                        }
+                    }
+                }
+        });
+
+    </script>
+{% endblock %}
+
+{% block content %}
+    <style>
+        .floating_window {
+            display: none;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.50);
+            z-index: 500;
+        }
+        .floating_window_unwrapper{
+            position: relative;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(194, 177, 196, 1);
+            padding: 10px 10px 10px;
+            height: 100px;
+            width: 350px;
+        }
+
+        .floating_window__buttons {
+            position: absolute;
+            bottom: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .floating_window__button {
+            text-align: center;
+            width: 145px;
+            border-radius: 90px;
+            {#background-color: ;#}
+            box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .floating_window__nickname_input_field {
+            display: block;
+            width: 296px;
+            height: 30px;
+            font-family: inherit;
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            border: 1px solid #bdbdbd;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .floating_window__button:hover {
+            background-color: #CD180E;
+            color: white;
+        }
+    </style>
+{#    <div id="block_content"#}
+{#         style="display: none; top: 0; left: 0;position: fixed; width: 100%; height: 100%; z-index: 499; background-color: rgba(0,0,0,0.5)"></div>#}
+    <div class="floating_window" id="nickname_field">
+        <div class="floating_window_unwrapper">
+            <div style="">
+                <div class="floating_window__buttons">
+                    <div id="submit_nickname" class="floating_window__button">
+
+                        Применить
+                    </div>
+                    <div id="cancel_nickname" class="floating_window__button">Отменить</div>
+                </div>
+            </div>
+            <INPUT type="text" maxlength="100" id="input_user_nickname" class="floating_window__nickname_input_field"
+                   placeholder="Введите новый ник">
+
+            <div id="floating_window_additional_text"></div>
+
+        </div>
+    </div>
+
+    <style>
+        .user_head_wrapper {
+            display: grid;
+            /* Три колонки */
+            grid-template-columns: auto 240px;
+        {#auto auto;#}
+            /* Два ряда */
+        {#grid-template-rows: auto 240px;#}
+            /* Автоматическое размещение в ряд */
+            grid-auto-flow: row;
+            /* Отступы между ячейками */
+            gap: 20px;
+        {#background-color: black;#}{#padding: 20px 20px 20px;#} overflow: hidden;
+        }
+
+        .user_avg_rate {
+            {#background-color: #c8b8b8;#}
+            background-color: #6B7A6F;
+            border-radius: 10px;
+            align-items: center;
+            text-align: center;
+            color: #F2D0CE;
+            width: 240px;
+        }
+
+        .user_avg_rate_text {
+            font-size: 100px;
+            font-family: "Rouge Script";
+            z-index: 100;
+        }
+
+        .user_container {
+            position: relative;
+            padding: 25px 25px 25px;
+            display: block;
+            {#background-color: white;#}
+            background-color: #F2D0CE;
+            border-radius: 10px;
+
+        }
+
+        .user_buttons {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .button_user {
+            text-align: center;
+            font-size: 20px;
+            background-color: #CD180E;
+            color: white;
+            box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+            &:hover{
+                background-color: rgba(205, 24, 14, 0.80);
+                color: white;
+            }
+        }
+
+        .user_nickname {
+            font-size: 45px;
+        }
+        .user_settings_wrapper{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    </style>
+    <div class="user_head_wrapper">
+        <div class="user_container">
+            <div class="user_nickname">{{ nickname }}</div>
+            {% if own_page %}
+                <div class="user_settings_wrapper">
+                    <a id="change_user_nickname" href="#">Изменить никнейм</a>
+                    <a id="change_user_block" href="#">{% if isshow %}Заблокировать аккаунт{% else %}Разблокировать аккаунт{% endif %}</a>
+                </div>
+            {% endif %}
+            <div id="not_succsesful_change_nickname" style="display: none;color: white; background-color: red">Нету
+                соединения с сервером, ничего не изменилось
+            </div>
+            <div class="user_buttons">
+                <a class="button_user" href="{{ profile_hash_user_id }}/favorites">
+                    Избранное
+                </a>
+                <a class="button_user" href="{{ profile_hash_user_id }}/reviews?page=1">
+                    Рецензии
+                </a>
+            </div>
+        </div>
+
+        <div class="user_avg_rate">
+            <h3>Средняя оценка</h3>
+            {% if isshow or own_page %}
+                <div class="user_avg_rate_text">{{ user_avg_rate }}</div>
+            {% else %}
+                <div class="user_avg_rate_text">~</div>
+            {% endif %}
+        </div>
+    </div>
+    {% if isshow %}
+        <div class="review_preview">
+            Рецензии
+        </div>
+        <style>
+            .link{
+                text-decoration: none;
+                color: black;
+            }
+            .review_preview {
+                display: flex;
+                justify-content: center;
+                font-size: 40px;
+                padding: 20px 0 20px;
+            }
+
+            .user_reviews {
+                display: grid;
+                grid-template-columns: auto;
+                grid-auto-flow: row;
+                gap: 40px;
+                padding: 20px 20px 20px;
+                overflow: hidden;
+                word-break: normal;
+            }
+
+            .user_review_information_wrapper {
+                background-color: white;
+                display: block;
+                flex-grow: 1;
+                height: 300px;
+            }
+
+            .review_title_name {
+                font-size: 22px;
+                font-weight: bold;
+            }
+
+            .review_title_text {
+                font-size: 18px;
+                display: block;
+                word-break: break-word;
+                overflow: hidden;
+            }
+
+            .review_movie_name {
+                font-size: 28px;
+                font-weight: bold;
+                height: 75px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            .review_wrapper {
+                padding: 5px 5px 5px;
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+                background-color: white;
+                border-radius: 10px;
+
+            }
+
+            .top_titles_main_block {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                bottom: 50px;
+                left: 65px;
+                width: 71px;
+                height: 71px;
+                background-color: palevioletred;
+                color: #81d5f1;
+                border-radius: 20px;
+                transform: rotate(45deg);
+                z-index: 100;
+            }
+
+            .top_titles_main_block_text {
+                font-size: 100px;
+                font-family: "Rouge Script";
+                transform: rotate(-45deg);
+            }
+
+            .review_movie_information {
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+
+            }
+            .reviews__review_information{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+        
+        </style>
+        <div class="user_reviews">
+        {% for review in reviews %}
+
+            <div class="review_wrapper">
+
+
+                <div class="info_fact__poster_item">
+                    <a href="/title/{{ review.id_title }}"><img src="{{ review.poster }}" alt="{{ review.name }}"></a>
+
+                    <div class="top_titles_main_block">
+                        <div class="top_titles_main_block_text">{{ review.user_rate }}</div>
+                    </div>
+
+                </div>
+
+
+                <div class="user_review_information_wrapper">
+                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 100px 195px; gap: 5px">
+                        <div>
+                            <div class="review_movie_name">{{ review.name }}</div>
+                            <div class="review_movie_information">
+                                <div class="list_titles__title_rates">
+                                    <div class="poster-ratefilm">{{ review.rate_film }}</div>
+                                    <div class="poster-kprate">{{ review.kp_rate }}</div>
+                                    <div class="poster-imdbrate">{{ review.imdb_rate }}</div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <a class="link" style="overflow: scroll;" href="{{ profile_hash_user_id }}/review/{{ review.id_title }}">
+                            <div>
+                                <div class="reviews__review_information">
+
+                                    {% if review.type_review == 1 %}
+                                        <div class="text_type_review" style="color: #7cea8a;">ПОЛОЖИТЕЛЬНАЯ</div>
+                                    {% elif review.type_review == 2 %}
+                                        <div class="text_type_review" style="color: #c1a8cf;">НЕЙТРАЛЬНАЯ</div>
+                                    {% else %}
+                                        <div class="text_type_review" style="color: #dd2647;">ОТРИЦАТЕЛЬНАЯ</div>
+                                    {% endif %}
+                                    <div class="text_type_review">{{ review.date_review }}</div>
+                                </div>
+                                <div class="review_title_name">{{ review.title_name }}</div>
+
+                                <div class="review_title_text">{{ review.title_content }}</div>
+                            </div>
+                        </a>
+                    </div>
+
+                    {#                    <div style="display: flex; flex-direction: column; overflow-y: scroll">#}
+                    {#                        <div style="flex: auto; height: auto">#}
+                    {#                        <div class="review_title_text">{{ review.title_content }}#}
+                    {#                        апиши мне словарь где должны быть поля rate_critique (2 - это лучшая рецензия, ради которой стоит посмотреть произведение /1 - она стоит внимания прочитать её / 0 - не нужно сохранять), age_rating (1 - если предназначена для возрастов достигшие 18 лет/ 0 - если можно читать любому возрасту), spoilers (0 - в рецензии нету спойлера к произведению/ 1 - есть спойлеры)#}
+                    {#    Эти оценки ты должен поставить по тексту рецензии «»#}
+                    {##}
+                    {#    Ты лучший рассказчик под презентации ты умеешь качественно составлять текста для презентации, так чтобы они были кратки и понятны и включали в себя основную информацию, также ты составляешь текст для фонового рассказа.#}
+                    {#    вот тебе задача: "Написать темы слайдов, текст для слайда и для рассказчика, под этот слайд, тема:"Системы визуального отображения. Мониторы" нужно 10 слайдов не включая титульный и заключительный""#}
+                    {#    вот тебе задача: "Написать темы слайдов, текст для слайда и для рассказчика, под этот слайд, тема:"Системы визуального отображения. Мониторы" нужно 10 слайдов не включая титульный и заключительный""#}
+                    {#                        </div>#}
+                    {#                            </div>#}
+                    {#                    </div>#}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <style>
+        {#.poster-container {#}
+        {#    display: flex;#}
+        {#    overflow-x: auto;#}
+        {#    white-space: nowrap;#}
+        {
+        #}#}
+        {##}
+        {#.poster-item {#}
+        {#    position: relative;#}
+        {#    margin-right: 10px;#}
+        {#    display: block;#}
+        {
+        #}#}
+        {##}
+        {#.poster-item img {#}
+        {#    width: 200px;#}
+        {#    height: 300px;#}
+        {#    object-fit: cover;#}
+        {#    display: block; /* Чтобы убрать небольшой отступ снизу */#}
+        {
+        #}#}
+        {##}
+        {#.poster-title {#}
+        {#    position: absolute;#}
+        {#    bottom: 0;#}
+        {#    left: 0;#}
+        {#    width: 100%;#}
+        {#    background-color: rgba(0, 0, 0, 0.7);#}
+        {#    color: white;#}
+        {#    padding: 10px;#}
+        {#    box-sizing: border-box;#}
+        {
+        #}#}
+        {##}
+        {#.poster-rate {#}
+        {#    position: absolute;#}
+        {#    top: 10px;#}
+        {#    left: 0;#}
+        {#    width: 20%;#}
+        {#    background-color: rgba(255, 209, 218, 0.9);#}
+        {#    color: black;#}
+        {#    padding: 5px;#}
+        {#    box-sizing: border-box;#}
+        {#    border-bottom-right-radius: 90px;#}
+        {#    border-top-right-radius: 90px;#}
+        {
+        #}#}
+    </style>
+    <div>
+        {#        {% if seq_and_preq %}#}
+        {#            <h3>Сиквелы и прикелы</h3>#}
+        {#        {% endif %}#}
+        {#        <div class="poster-container">#}
+        {#            {% for title in titles %}#}
+        {#                <div class="poster-item">#}
+        {#                    <a href="/title/{{ title.id }}">#}
+        {#                        <img src="{{ title.poster }}" alt="{{ title.name }}">#}
+        {#                        <div class="poster-title">{{ title.name }}</div>#}
+        {#                        <div class="poster-rate">{{ title.kp_rate }}</div>#}
+        {#    #}
+        {#                    </a>#}
+        {#                </div>#}
+        {#            {% endfor %}#}
+        {#        </div>#}
+    </div>
+
+    <style>
+        .list_titles_on_grid {
+            background-color: #f3dcf2;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+
+            grid-template-rows: 225px 225px;
+            grid-auto-flow: row;
+            gap: 40px;
+            padding: 20px 20px 20px;
+            overflow: hidden;
+        }
+
+        .info_fact__poster_item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info_fact__poster_item img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .title_item_poster_info {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .poster-imdbrate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgb(245, 197, 24);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-kprate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 84, 1, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-ratefilm {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: #CD180E;
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .poster-user_rate {
+            top: 5px;
+            right: 5px;
+            width: 50px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: black;
+            box-sizing: border-box;
+            border-radius: 90px;
+            text-align: center;
+        }
+
+        .list_titles__title_rates {
+            display: flex;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__rates_wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .list_titles__title__info {
+            position: relative;
+            display: block;
+            flex-grow: 1;
+            overflow: scroll;
+        }
+    </style>
+
+{% endblock %}
+
+{% block mobile_head %}
+    <style>
+    
+        .mobile_user_window_wrapper{
+            padding: 0 10px 0;
+        }
+        .mobile_user_window__user_info_container{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .mobile_user_nickanme{
+            font-size: 25px;
+        }
+        .mobile__user_settings_wrapper{
+            display: flex;
+            justify-content: space-between;
+        }
+        .mobile_user_window__user_info__name{
+            padding: 5px 5px 5px;
+            background-color: #F2D0CE;
+            border-radius: 10px;
+        }
+        .mobile__user_settings_wrapper{
+            font-size: 14px;
+        }
+        .mobile_user_window__user_info__dop{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile_user_window__user_info__dop__buttons_container{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .mobile_user_window__user_info__dop__avg_rate_container{
+            background-color: #6B7A6F;
+            color: white;
+            border-radius: 5px;
+            flex: 1;
+        }
+        .mobile_user_window__user_info__dop__avg_rate__rate{
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            font-size: 40px;
+            font-family: "Rouge Script";
+            z-index: 100;
+        }
+        .mobile_user_window__user_info__dop__avg_rate__name{
+            display: flex;
+            justify-content: center;
+        }
+        .mobile_user_window__user_info__dop__buttons__button{
+            display: block;
+            text-align: center;
+            font-size: 14px;
+            background-color: #CD180E;
+            color: white;
+            box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+        }
+        .mobile__review_wrapper{
+            padding: 5px 5px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .mobile__review__poster_item{
+            height: 100px;
+
+        }
+        .rate_poster{
+            position: absolute;
+            padding: 2px 2px 2px;
+            color: black;
+            {#width: 50px;#}
+            top: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+            border-radius: 90px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+            z-index: 100;
+            &.ratefilm{
+                left:2px;
+                top: 2px;
+                background-color: #CD180E;
+                color: white;
+            }
+            &.kprate{
+                background-color: rgb(255, 84, 1);
+                left: 48px;
+                top: 2px;
+            }
+            &.imdbrate{
+                background-color: rgb(245, 197, 24);
+                top: 2px;
+                right: 2px;
+            }
+             &.block{
+                position: static;
+            }
+        }
+        .mobile__review__title_info__rates{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+        }
+        .mobile__review__review_type{
+            display: flex;
+            justify-content: center;
+        
+            &.negative{
+                background-color: #CD180E;
+                color: white;
+            }
+            &.positive{
+                background-color: #6B7A6F;
+                color: white;
+            }
+            &.neutral{
+                background-color: black;
+                color: white;
+            }
+
+        }
+        .mobile__review__review_container{
+            display: block;
+        }
+        .mobile__review__title_info{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile_skipar{
+            height: 1px;
+            background-color: black;
+            margin: 20px 0 10px;
+        }
+        .mobile_name_of_block{
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .mobile__review__title_info__name{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .review_title_name{
+            font-weight: bold;
+        }
+        .mobile_change_wrapper{
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            background-color: white;
+            padding: 10px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            z-index: 900;
+            &.hide{
+                display: none;
+            }
+        
+        }
+        .mobile_change__input {
+            display: block;
+            width: 275px;
+            height: 30px;
+            font-family: inherit;
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            border: 1px solid #bdbdbd;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .mobile_change__buttons_container{
+            display: flex;
+            gap: 20px;
+
+        }
+        .mobile_change__button{
+            padding: 5px 5px 5px;
+            width: 150px;
+            display: flex;
+            justify-content: center;
+            border-radius: 90px;
+            box-shadow: 0 0 10px #6B7A6F;
+
+            &.submit{
+            }
+            &.cancel{
+            }
+        }
+        .mobile_change__text{
+        }
+        .User__review__reactions {
+            display: flex;
+            flex-direction: row;
+            justify-content: right;
+            gap: 5px;
+        }
+
+        .User__review__reaction {
+            border-radius: 90px;
+            padding: 5px 5px 5px;
+
+            &.like {
+                background-color: #6B7A6F;
+                {#background-color: #1a8c91;#}
+                color: white;
+            }
+
+            &.dislike {
+                background-color: #CD180E;
+                color: white;
+            }
+
+            .svg_reaction {
+                fill: white;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const floating_window_additional_text = document.getElementById('floating_window_additional_text')
+            const nickname_field = document.getElementById('field_mobile_change')
+            const change_user_nickname = document.getElementById('mobile__change_user_nickname')
+            const field_change_user_block = document.getElementById('mobile__change_user_block')
+            const submit_button = document.getElementById('submit_nickname')
+            const cancel_button = document.getElementById('cancel_nickname')
+            const input_user_nickname = document.getElementById('input_user_nickname')
+            change_user_nickname.addEventListener('click', event => {
+                nickname_field.classList.remove('hide');
+                input_user_nickname.style.display = 'block'
+                floating_window_additional_text.innerText='(больше 3 символов)'
+                submit_button.addEventListener('click', submit_change_nickname);
+            });
+
+            cancel_button.addEventListener('click', event => {
+                nickname_field.classList.add('hide');
+                submit_button.removeEventListener('click',submit_change_user_block)
+                submit_button.removeEventListener('click', submit_change_nickname);
+
+            });
+
+
+            field_change_user_block.addEventListener('click', event=>{
+                nickname_field.classList.remove('hide');
+                input_user_nickname.style.display = 'none'
+                {% if isshow %}
+                    floating_window_additional_text.innerText=`Заблокировать аккаунт?
+                    Когда вы блокируете аккаунт люди будут видеть ваши рецензии под фильмами, но не смогут ставить лайки!
+                    Также они не смогут смотреть ваши избранные и видеть все ваши рецензии`
+                {% else %}
+                    floating_window_additional_text.innerText='Разблокировать аккаунт?'
+                {% endif %}
+                submit_button.addEventListener('click', submit_change_user_block);
+            })
+
+            function change_nickname(nickname, count) {
+                if (count > 3) {
+                    const not_succsesful_change_nickname = document.getElementById('not_succsesful_change_nickname')
+                    not_succsesful_change_nickname.style.display = 'block'
+                    return false;
+                } else {
+                    fetch(`/accounts/change/nickname?nickname=${nickname}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.status) {
+                                console.log('чтоо')
+                                return change_nickname(nickname, count + 1)
+                            }
+                        })
+                    return true;
+                }
+            }
+
+            function change_user_block(count){
+                if (count > 3) {
+                    const not_succsesful_change_nickname = document.getElementById('not_succsesful_change_nickname')
+                    not_succsesful_change_nickname.style.display = 'block'
+                    return false;
+                } else {
+                    fetch(`/accounts/change/block`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.status) {
+                                console.log('чтоо')
+                                return change_user_block(count)
+                            }
+                        })
+                    return true;
+                }
+            }
+
+            function submit_change_user_block(event){
+                var result = change_user_block(1)
+                console.log(result)
+                if (result) {
+                    nickname_field.classList.add('hide');
+                    submit_button.removeEventListener('click',submit_change_user_block)
+                    location.replace('/')
+                }
+            }
+            function submit_change_nickname(event){
+                    if (input_user_nickname.value.length > 3) {
+                        var result = change_nickname(input_user_nickname.value, 1)
+                        console.log(result)
+                        if (result) {
+                            nickname_field.classList.add('hide');
+                            submit_button.removeEventListener('click',submit_change_nickname)
+                            setTimeout(() => {location.reload()}, 100)
+                        }
+                    }
+                }
+        });
+
+    </script>
+{% endblock %}
+
+{% block mobile_content %}
+    
+        <div class="mobile_change_wrapper hide" id="field_mobile_change">
+            <INPUT type="text" maxlength="100" id="input_user_nickname" class="mobile_change__input" placeholder="Введите новый ник">
+            <div class="mobile_change__text" id="floating_window_additional_text">
+            </div>
+    
+            <div class="mobile_change__buttons_container">
+                <div id="submit_nickname" class="mobile_change__button submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 507.506 507.506" style="enable-background:new 0 0 507.506 507.506;" xml:space="preserve" width="24" height="24">
+                        <g><path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z"/></g>
+                    </svg>
+                    Применить</div>
+                <div id="cancel_nickname" class="mobile_change__button cancel">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 512.021 512.021" style="enable-background:new 0 0 512.021 512.021;" xml:space="preserve" width="24" height="24">
+                        <g><path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/></g>
+                    </svg>
+                    Отменить
+                </div>
+            </div>
+        </div>
+        <div class="mobile_user_window_wrapper">
+        <div class="mobile_user_window__user_info_container">
+            <div class="mobile_user_window__user_info__name">
+                <div class="mobile_user_nickanme">
+                    {{ nickname }}
+                </div>
+                 {% if own_page %}
+                    <div class="mobile__user_settings_wrapper">
+                        <a id="mobile__change_user_nickname" href="#">Изменить никнейм</a>
+                        <a id="mobile__change_user_block" href="#">{% if isshow %}Заблокировать аккаунт{% else %}Разблокировать аккаунт{% endif %}</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="mobile_user_window__user_info__dop">
+                <div class="mobile_user_window__user_info__dop__buttons_container">
+                    <a class="mobile_user_window__user_info__dop__buttons__button" href="{{ profile_hash_user_id }}/favorites">
+                        Избранное
+                    </a>
+                    <a class="mobile_user_window__user_info__dop__buttons__button" href="{{ profile_hash_user_id }}/reviews?page=1">
+                        Рецензии
+                    </a>
+                </div>
+                <div class="mobile_user_window__user_info__dop__avg_rate_container">
+                    <div class="mobile_user_window__user_info__dop__avg_rate__name">Средняя оценка</div>
+                    <div class="mobile_user_window__user_info__dop__avg_rate__rate">{% if isshow %}{{ user_avg_rate }}{% else %}~{% endif %}</div>
+
+                </div>
+            </div>
+        </div>
+        {% if isshow %}
+            <div class="mobile_name_of_block">Рецензии</div>
+            {% for review in reviews %}
+            <div class="mobile_skipar"></div>
+            <div class="mobile__review_wrapper">
+                <a href="/title/{{ review.id_title }}" class="link">
+                    <div class="mobile__review__title_info">
+                        <img  class="mobile__review__poster_item" src="{{ review.poster }}" alt="{{ review.name }}">
+                        <div>
+                            <div class="mobile__review__title_info__name">{{ review.name }}</div>
+                            <div class="mobile__review__title_info__add">
+                                <div class="mobile__review__title_info__rates">
+                                    <div class="rate_poster ratefilm block">{{ review.rate_film }}</div>
+                                    <div class="rate_poster kprate block">{{ review.kp_rate }}</div>
+                                    <div class="rate_poster imdbrate block">{{ review.imdb_rate }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <div class="mobile__review__review_info">
+                    <div style="display: grid; grid-auto-flow: row; grid-auto-rows: 100px 195px; gap: 5px">
+                        
+                        </div>
+                        <a class="link" style="overflow: scroll;" href="{{ profile_hash_user_id }}/review/{{ review.id_title }}">
+                            <div>
+                                <div class="mobile__review__review_container">
+
+                                    {% if review.type_review == 1 %}
+                                        <div class="mobile__review__review_type positive" >ПОЛОЖИТЕЛЬНАЯ</div>
+                                    {% elif review.type_review == 2 %}
+                                        <div class="mobile__review__review_type neutral" >НЕЙТРАЛЬНАЯ</div>
+                                    {% else %}
+                                        <div class="mobile__review__review_type negative">ОТРИЦАТЕЛЬНАЯ</div>
+                                    {% endif %}
+                                    <div class="text_type_review">{{ review.date_review }}</div>
+                                </div>
+                                <div class="review_title_name">{{ review.title_name }}</div>
+
+                                <div class="review_title_text">{{ review.title_content }}</div>
+                            </div>
+                            {% if not review.block_account %}
+                                <div class="User__review__reactions">
+                                    <div class="User__review__reaction like">
+                                        {{ review.count_like }}
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M22.773,7.721A4.994,4.994,0,0,0,19,6H15.011l.336-2.041A3.037,3.037,0,0,0,9.626,2.122L7.712,6H5a5.006,5.006,0,0,0-5,5v5a5.006,5.006,0,0,0,5,5H18.3a5.024,5.024,0,0,0,4.951-4.3l.705-5A5,5,0,0,0,22.773,7.721ZM2,16V11A3,3,0,0,1,5,8H7V19H5A3,3,0,0,1,2,16Zm19.971-4.581-.706,5A3.012,3.012,0,0,1,18.3,19H9V7.734a1,1,0,0,0,.23-.292l2.189-4.435A1.07,1.07,0,0,1,13.141,2.8a1.024,1.024,0,0,1,.233.84l-.528,3.2A1,1,0,0,0,13.833,8H19a3,3,0,0,1,2.971,3.419Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="User__review__reaction dislike">
+                                        {{ review.count_dislike }}
+                                        <svg class="svg_reaction" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26">
+                                            <path d="M23.951,12.3l-.705-5A5.024,5.024,0,0,0,18.3,3H5A5.006,5.006,0,0,0,0,8v5a5.006,5.006,0,0,0,5,5H7.712l1.914,3.878a3.037,3.037,0,0,0,5.721-1.837L15.011,18H19a5,5,0,0,0,4.951-5.7ZM5,5H7V16H5a3,3,0,0,1-3-3V8A3,3,0,0,1,5,5Zm16.264,9.968A3,3,0,0,1,19,16H13.833a1,1,0,0,0-.987,1.162l.528,3.2a1.024,1.024,0,0,1-.233.84,1.07,1.07,0,0,1-1.722-.212L9.23,16.558A1,1,0,0,0,9,16.266V5h9.3a3.012,3.012,0,0,1,2.97,2.581l.706,5A3,3,0,0,1,21.264,14.968Z"/>
+                                        </svg>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </a>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <div class="mobile_account_blocked_title">Аккаунт Заблокирован</div>
+        {% endif %}
+    </div>
+    
+{% endblock %}

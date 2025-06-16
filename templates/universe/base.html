@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="ru" class="html_dock">
+<head>
+    <link rel="icon" href="{% static 'favicon.ico' %}" />
+
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Rouge Script' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Vievport" content="width=dexice-width, user-scalable=no">
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    {% block universe_head %}
+
+    {% endblock %}
+    {% if request.user_agent.is_mobile %}
+        {% block mobile_head %}
+
+        {% endblock %}
+    {% else %}
+        {% block head %}
+
+        {% endblock %}
+    {% endif %}
+    <style>
+        .mobile_account_blocked_title{
+            font-size: 30px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+{#    <link href="https://fonts.cdnfonts.com/css/roboto-flex" rel="stylesheet">#}
+
+    {% if request.user_agent.is_mobile %}
+        <style>
+        .link {
+            text-decoration: none;
+            color: black;
+
+            &:hover {
+                color: black;
+            }
+        }
+        .header__user_name{
+            &.active{
+                fill: #CD180E;
+            }
+        }
+        .mobile_header__wrapper{
+            margin-bottom: 20px;
+            padding: 0 20px 0 ;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 0 10px rgba(107, 122, 111, 0.40);
+
+        }
+        .mobile_body{
+            min-width: 375px;
+        }
+        .mobile_header__name_site{
+            color: #CD180E;
+            align-content: center;
+            font-size: 30px;
+        }
+        .mobile_header__interactive_buttons{
+            align-items: center;
+            align-content: center;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .mobile_find_window_wrapper{
+            position: fixed;
+            overflow-y: scroll;
+            left: 0;
+            top: 0;
+            background-color: white;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px 10px;
+            z-index: 999;
+            &.hide{
+                display: none;
+            }
+        }
+        .mobile_find_window_cancel{
+            margin-right: 44px;
+        }
+        .mobile_find_window__item_wrapper{
+            padding: 10px 5px 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .mobile_find_window__item_poster{
+                flex: 1;
+                object-fit: contain;
+                height: 100px;
+            }
+        .mobile_find_window__item_name{
+            color: black;
+            font-size: 25px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            flex: 5;
+        }
+        .mobile_find_window__active_buttons{
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .mobile_header__input_field{
+                display: block;
+                width: 260px;
+                height: 30px;
+                font-family: inherit;
+                font-size: 20px;
+                left: 0;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #bdbdbd;
+                border-radius: 0.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+        .mobile_find_window__item_link{
+            text-decoration: none;
+            color: black;
+        }
+        .mobile_find_window__items_title{
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .mobile_user_menu_wrapper{
+            z-index: 999;
+            background-color: white;
+            padding: 0 10px 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            &.hide{
+                display: none;
+            }
+        }
+        .mobile_user_menu__header_cancel{
+            height: 50px;
+            display: flex;
+            padding: 0 10px 0;
+            justify-content: right;
+            align-items: center;
+        }
+        .mobile_user_menu_button{
+            font-size: 25px;
+            text-decoration: none;
+            color: black;
+            width: 100%;
+        }
+        .header__user_menu__gap {
+            margin-top: 14px;
+            height: 1px;
+            background-color: black;
+        }
+        .mobile_user_menu_button_info {
+            font-size: 20px;
+            align-content: center;
+            padding-left: 10px;
+            margin-top: 10px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: white;
+        }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+
+
+
+                const inputFind = document.getElementById('header__inputFind')
+                const field_mobile_find = document.getElementById('mobile_find')
+                const field_mobile_cancel_find = document.getElementById('mobile_find_window_cancel')
+                const main_find_field = document.getElementById('mobile_find_wrapper')
+                const field_find_result = document.getElementById('mobile_find_window__container')
+                var old_value =  ''
+                var timeout = 0
+
+                field_mobile_cancel_find.addEventListener('click', event => {
+                    main_find_field.classList.add('hide')
+                })
+                field_mobile_find.addEventListener('click', event => {
+                    main_find_field.classList.remove('hide')
+                    inputFind.focus()
+                })
+                inputFind.addEventListener('keyup', function (event) {
+                    clearTimeout(timeout);
+
+                    if (!inputFind.value.match(/\S/) || old_value === inputFind.value) {
+                        clearTimeout(timeout);
+                    }else{
+                        old_value = inputFind.value
+                        timeout = setTimeout(() => {find_modal_window(inputFind.value)}, 500)
+                    }
+                })
+
+                function find_modal_window(query){
+                    fetch(`/find/java_find/mini?query=${ query }`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            field_find_result.innerHTML = ''
+
+                            if (data.most_likely === 0){
+                            field_find_result.innerHTML += "<div class='mobile_find_window__items_title'>Возможно, искали</div>"
+                            }
+                            field_find_result.innerHTML += `
+                                <a class='mobile_find_window__item_link' href='/title/${data.most_likely.id}'>
+                                    <div class="mobile_find_window__item_wrapper">
+                                        <img class="mobile_find_window__item_poster" src="${data.most_likely.poster}">
+                                        <div class="mobile_find_window__item_name">
+                                            ${data.most_likely.name}
+                                        </div>
+                                    </div>
+                                </a>
+
+
+                                `;
+                            if (data.titles.length !== 0){
+                                field_find_result.innerHTML += "<div class='mobile_find_window__items_title'>Фильмы</div>"
+                            }
+                            data.titles.forEach(function(title) {
+                                field_find_result.innerHTML += `
+                                <a class='mobile_find_window__item_link' href='/title/${title.id}'>
+                                    <div class="mobile_find_window__item_wrapper">
+                                        <img class="mobile_find_window__item_poster" src="${title.poster}">
+                                        <div class="mobile_find_window__item_name">
+                                            ${title.name}
+                                        </div>
+                                    </div>
+                                </a>
+                                `;
+                            });
+                            if (data.persons.length !== 0){
+                                field_find_result.innerHTML += "<div class='mobile_find_window__items_title'>Актеры</div>"
+                            }
+                            data.persons.forEach(function(person) {
+                                field_find_result.innerHTML += `
+                                <a class='mobile_find_window__item_link' href='/person/${person.id}'>
+                                    <div class="mobile_find_window__item_wrapper">
+                                        <img class="mobile_find_window__item_poster" src="${person.photo}">
+                                        <div class="mobile_find_window__item_name">
+                                            ${person.name}
+                                        </div>
+                                    </div>
+                                </a>
+                                `;
+                            });
+
+                        })
+                }
+
+                const field_menu = document.getElementById('field_menu')
+                const field_mobile_user_menu__cancel = document.getElementById('mobile_user_menu__cancel')
+                const mobile_user_menu = document.getElementById('mobile_user_menu')
+
+                field_menu.addEventListener('click', event => {
+                    mobile_user_menu.classList.remove('hide')
+                })
+                field_mobile_user_menu__cancel.addEventListener('click', event => {
+                    mobile_user_menu.classList.add('hide')
+                })
+
+            });
+        </script>
+    {% else %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const inputFind = document.getElementById('header__inputFind')
+                var hint = document.createElement('div');
+                hint.id = 'header-div-find-info'
+                document.body.appendChild(hint);
+
+                const fieldFindInfo = document.getElementById('header-div-find-info')
+
+                var timeout = 0
+                var out = 1
+                var focus_out = 0
+                var old_value =  ''
+
+                window.addEventListener('resize', () => {
+                    let bounds = inputFind.getBoundingClientRect();
+                    hint.style.left = bounds.left + 'px';
+                });
+
+                fieldFindInfo.addEventListener('mouseenter', function (event){
+                    out = 0
+                });
+                fieldFindInfo.addEventListener('mouseleave', function (event){
+                    out = 1
+                    mouse_over(hint, out, focus_out)
+                });
+                inputFind.addEventListener('focusout', function (event){
+                    focus_out = 1
+                    mouse_over(hint, out, focus_out)
+                });
+                inputFind.addEventListener('focus', function (event) {
+                    focus_out = 0
+
+                    if (inputFind.value.match(/\S/)){
+                        hint.style.display = 'inline-block';
+                    }
+                });
+
+                inputFind.addEventListener('keyup', function (event) {
+
+                    focus_out = 0
+                    clearTimeout(timeout);
+
+                    hint.className = "header__find_page";
+                    let bounds = inputFind.getBoundingClientRect();
+                    hint.style.left = bounds.left + 'px';
+                    hint.style.top = bounds.bottom + 10 + 'px';
+                    {#hint.style.width = '100px'#}
+                    {#hint.style.height = '100px'#}
+                    hint.style.display = 'inline-block';
+                    {#console.log(hint.style)#}
+                    if (!inputFind.value.match(/\S/) || old_value === inputFind.value) {
+                        clearTimeout(timeout);
+                    }else{
+                        old_value = inputFind.value
+                        timeout = setTimeout(() => {find_modal_window(inputFind.value, hint)}, 500)
+                    }
+
+                });
+            });
+            function find_modal_window(query, hint){
+                fetch(`/find/java_find/mini?query=${ query }`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            hint.innerHTML = ''
+
+                            if (data.most_likely === 0){
+                            hint.innerHTML += "<div class='header__find_page__text'>Возможно, искали</div>"
+                            }
+                            hint.innerHTML += `
+                                <a class='header__find_page__link' href='/title/${data.most_likely.id}'>
+                                    <div class='header__find_page__find_wrapper'>
+                                        <div class="header__find_page__find_info_wrapper">
+                                            <img class='header__find_page__poster' src='${data.most_likely.poster}'>
+                                            <div class=header__find_page__text>${data.most_likely.name}</div>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                `;
+                            if (data.titles.length !== 0){
+                                hint.innerHTML += "<div class='header__find_page__text'>Фильмы</div>"
+                            }
+                            data.titles.forEach(function(title) {
+                                hint.innerHTML += `
+                                <a class='header__find_page__link' href='/title/${title.id}'>
+
+                                    <div class='header__find_page__find_wrapper'>
+                                        <div class="header__find_page__find_info_wrapper">
+                                            <img class='header__find_page__poster' src='${title.poster}'>
+                                            <div class=header__find_page__text>${title.name}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                `;
+                            });
+                            if (data.persons.length !== 0){
+                                hint.innerHTML += "<div class='header__find_page__text'>Актеры</div>"
+                            }
+                            data.persons.forEach(function(person) {
+                                hint.innerHTML += `
+                                <a class='header__find_page__link' href='/person/${person.id}'>
+                                    <div class='header__find_page__find_wrapper'>
+                                        <div class="header__find_page__find_info_wrapper">
+                                            <img class='header__find_page__poster' src='${person.photo}'>
+                                            <div class=header__find_page__text>${person.name}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                `;
+                            });
+                            {#console.log(data)#}
+                            {#person = data.person#}
+                            {#hint.innerHTML = `#}
+                            {#    <div style=" display: flex; gap: 5px; flex-direction: row;">#}
+                            {##}
+                            {#        <div style="flex: 1; width: 100px">#}
+                            {#            <img src='${ person.photo }' alt='${ person.name }' style='width: 100px;'>#}
+                            {#        </div>#}
+                            {#        <div style="flex: 1;">#}
+                            {#            <h3>${ person.name }</h3>#}
+                            {#            <p>${ person.age } лет</p>#}
+                            {#            <p>${ person.sex }</p>#}
+                            {#        </div>#}
+                            {#    </div>#}
+
+                                {#`;#}
+                            {#hint.style.display = 'inline-block';#}
+
+                        });
+            }
+            function mouse_over(hint, out, focus_out) {
+                if (out === 1 && focus_out === 1){
+                    hint.style.display = 'none';
+                }
+            }
+
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const user_field = document.getElementById('user_name_field')
+                var hint = document.createElement('div');
+                hint.id = 'header-div-user-menu'
+                hint.className = "header__user_menu";
+                var hint_width = 300
+                document.body.appendChild(hint);
+                hint.innerHTML = `
+                    <a href="/accounts/register/" style="text-decoration: none; color: black;"><div class="header__user_menu__name">{{ request.user.username | title }}</div></a>
+                    <a href='/' class="header__user_menu__button"><div class="header__user_menu__button_info" ">Главное меню</div></a>
+                    <div class="header__user_menu__gap"></div>
+                    <a href='/favorites' class="header__user_menu__button"><div class="header__user_menu__button_info" ">Избранное</div></a>
+                    <a href='/pin' class="header__user_menu__button"><div class="header__user_menu__button_info" ">Буду смотреть</div></a>
+                    <a href='/viewed' class="header__user_menu__button"><div class="header__user_menu__button_info" ">Оценки</div></a>
+                    <div class="header__user_menu__gap"></div>
+                    <a class="header__user_menu__button" href="{% url "logout" %}"><div class="header__user_menu__button_info">Выйти
+                    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 30 30" width="15" height="15"><path d="M11.5,16A1.5,1.5,0,0,0,10,17.5v.8A2.7,2.7,0,0,1,7.3,21H5.7A2.7,2.7,0,0,1,3,18.3V5.7A2.7,2.7,0,0,1,5.7,3H7.3A2.7,2.7,0,0,1,10,5.7v.8a1.5,1.5,0,0,0,3,0V5.7A5.706,5.706,0,0,0,7.3,0H5.7A5.706,5.706,0,0,0,0,5.7V18.3A5.706,5.706,0,0,0,5.7,24H7.3A5.706,5.706,0,0,0,13,18.3v-.8A1.5,1.5,0,0,0,11.5,16Z"/><path d="M22.561,9.525,17.975,4.939a1.5,1.5,0,0,0-2.121,2.122l3.411,3.411L7,10.5a1.5,1.5,0,0,0,0,3H7l12.318-.028-3.467,3.467a1.5,1.5,0,0,0,2.121,2.122l4.586-4.586A3.505,3.505,0,0,0,22.561,9.525Z"/></svg>
+                    </div></a>
+                    `;
+
+                var timeout = 0
+                var out = 0
+                var focus_out = 0
+                user_field.addEventListener('mouseenter', event => {
+                    clearTimeout(timeout);
+
+                    console.log('ac')
+                    let bounds = user_field.getBoundingClientRect();
+
+
+                    hint.style.width = hint_width + 'px'
+
+
+                    hint.style.left = bounds.right - ((hint_width / bounds.width) * bounds.width) + 'px';
+                    hint.style.top = bounds.top + 'px';
+                    console.log(hint.getBoundingClientRect().width, hint.style.left)
+                    timeout = setTimeout(() => {view_user_menu(hint)}, 200)
+
+                });
+                user_field.addEventListener('mouseleave', event=>{
+                    clearTimeout(timeout);
+                })
+                hint.addEventListener('mouseleave', event => {
+                    clearTimeout(timeout);
+                    hint.style.display = 'none';
+                });
+
+
+             });
+            function view_user_menu(hint){
+                hint.style.display = 'inline-block';
+            }
+            {#function find_modal_window(query, hint){#}
+            {#    fetch(`/find/java_find/mini?query=${ query }`, {#}
+            {#            method: 'GET',#}
+            {#            headers: {#}
+            {#                'Content-Type': 'application/json',#}
+            {#            }#}
+            {#        })#}
+            {#            .then(response => response.json())#}
+            {#            .then(data => {#}
+            {#                hint.innerHTML = ''#}
+            {#                #}
+            {#                if (data.most_likely === 0){#}
+            {#                hint.innerHTML += "<div class='header__find_page__text'>Возможно, искали</div>"#}
+            {#                }#}
+            {#                hint.innerHTML += `#}
+            {#                    <a class='header__find_page__link' href='/title/${data.most_likely.id}'>#}
+            {#                        <div class='header__find_page__find_wrapper'>#}
+            {#                            <div class="header__find_page__find_info_wrapper"> #}
+            {#                                <img class='header__find_page__poster' src='${data.most_likely.poster}'>#}
+            {#                                <div class=header__find_page__text>${data.most_likely.name}</div>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </a>#}
+            {##}
+            {#                    `;#}
+            {#                if (data.titles.length !== 0){#}
+            {#                    hint.innerHTML += "<div class='header__find_page__text'>Фильмы</div>"#}
+            {#                }#}
+            {#                data.titles.forEach(function(title) {#}
+            {#                    hint.innerHTML += `#}
+            {#                    <a class='header__find_page__link' href='/title/${title.id}'>#}
+            {##}
+            {#                        <div class='header__find_page__find_wrapper'>#}
+            {#                            <div class="header__find_page__find_info_wrapper"> #}
+            {#                                <img class='header__find_page__poster' src='${title.poster}'>#}
+            {#                                <div class=header__find_page__text>${title.name}</div>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </a>#}
+            {#                    `;#}
+            {#                });#}
+            {#                if (data.persons.length !== 0){#}
+            {#                    hint.innerHTML += "<div class='header__find_page__text'>Актеры</div>"#}
+            {#                }#}
+            {#                data.persons.forEach(function(person) {#}
+            {#                    hint.innerHTML += `#}
+            {#                    <a class='header__find_page__link' href='/person/${person.id}'>#}
+            {#                        <div class='header__find_page__find_wrapper'>#}
+            {#                            <div class="header__find_page__find_info_wrapper"> #}
+            {#                                <img class='header__find_page__poster' src='${person.photo}'>#}
+            {#                                <div class=header__find_page__text>${person.name}</div>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </a>#}
+            {#                    `;#}
+            {#                });#}
+                            {#console.log(data)#}
+                            {#person = data.person#}
+                            {#hint.innerHTML = `#}
+                            {#    <div style=" display: flex; gap: 5px; flex-direction: row;">#}
+                            {##}
+                            {#        <div style="flex: 1; width: 100px">#}
+                            {#            <img src='${ person.photo }' alt='${ person.name }' style='width: 100px;'>#}
+                            {#        </div>#}
+                            {#        <div style="flex: 1;">#}
+                            {#            <h3>${ person.name }</h3>#}
+                            {#            <p>${ person.age } лет</p>#}
+                            {#            <p>${ person.sex }</p>#}
+                            {#        </div>#}
+                            {#    </div>#}
+            {##}
+                                {#`;#}
+                            {#hint.style.display = 'inline-block';#}
+            {##}
+            {#            });#}
+            {# }#}
+            {#function mouse_over(hint, out, focus_out) {#}
+            {#    if (out === 1 && focus_out === 1){#}
+            {#        hint.style.display = 'none';#}
+            {#    }#}
+            {# }#}
+
+        </script>
+        <style>
+        .header__site{
+            box-shadow: 0 0 10px rgba(107, 122, 111, 0.4);
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 10px 100px 10px;
+            background-color: white;
+            {#background-color: #F2D0CE;#}
+            {#background-color: #DB7093;#}
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .header__user_menu{
+            z-index: 1001;
+            padding: 10px 20px 10px;
+            display: none;
+            position: fixed;
+            background-color: white;
+            {#border: 1px solid black;#}
+            border-radius: 10px;
+            height: 80vh;
+            width: 300px;
+            overflow-y: scroll;
+            box-shadow: 0 0 15px rgba(194, 177, 196, 1);
+
+        }
+        .header__user_menu__name {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            font-size: 30px;
+        }
+        .header__user_menu__button {
+
+
+            text-decoration: none;
+            color: black;
+            width: 100%;
+        }
+        .header__user_menu__button_info {
+            font-size: 20px;
+            align-content: center;
+            padding-left: 10px;
+            margin-top: 10px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: white;
+        }
+        .header__user_menu__button_info:hover{
+            color: black;
+            {#background-color: lightgrey;#}
+            background-color: #6B7A6F;
+
+        }
+        .header__user_menu__button:hover {
+            color: black;
+            background-color: lightgrey;
+        }
+        .header__user_menu__gap {
+            margin-top: 14px;
+            height: 1px;
+            background-color: black;
+        }
+        .header__user_menu__info{
+            margin-top: 20px;
+            z-index: 1001;
+
+            background-color: white;
+        {#border: 1px solid black;#}
+
+
+        }
+            .header__find_page{
+                z-index: 1001;
+
+                position: fixed;
+                background-color: white;
+            {#border: 1px solid black;#}
+                border-radius: 10px;
+                height: 80vh;
+                width: 260px;
+                overflow-y: scroll;
+                box-shadow: 0 0 15px rgba(194, 177, 196, 1);
+
+            }
+
+            .header__find_page__text{
+                font-size: 15px;
+                margin: 3px 10px 3px;
+                overflow: hidden;
+            }
+            .header__find_page__find_wrapper{
+                padding: 10px 10px 10px;
+                background-color: white;
+                height: 68px;
+
+            }
+            .header__find_page__find_info_wrapper{
+                height: 48px;
+                background-color: white;
+                display: flex;
+            }
+            .header__find_page__link{
+                text-decoration: none;
+                color: black;
+            }
+            .header__find_page__link:hover{
+                color: palevioletred;
+            }
+            .header__find_page__find_wrapper:hover{
+                background-color: #fff2f7;
+            }
+            .header__find_page__find_wrapper:hover .header__find_page__find_info_wrapper{
+                background-color: #fff2f7;
+            }
+
+            .header__find_page__poster{
+                flex: 1;
+                object-fit: contain;
+                height: 48px;
+            }
+            .header__find_page__text{
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                flex: 5;
+            }
+            .style_title {
+                background-color: #fff2fe;
+                border: 1px solid #f0fad4;
+                color: #000000;
+                padding: 10px;
+                margin-top: 10px;
+            }
+            .header__menu_name{
+            {#font-family: 'Roboto Flex'; #}
+                font-size: 30px;
+                text-decoration: none;
+                color: black;
+                font-weight: bold;
+            }
+            .header__menu_name:hover{
+                color: black;
+            }
+            .header__input_field{
+                display: block;
+                width: 260px;
+                height: 30px;
+                font-family: inherit;
+                font-size: 20px;
+                left: 0;
+                margin: 0 50px 0;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #bdbdbd;
+                border-radius: 0.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+            .header__user_name{
+                &.active{
+                    fill: #CD180E;
+                }
+                float: right;
+                color: black;
+            {#font-family: 'Roboto Flex'; #}
+                font-size: 30px;
+                text-decoration: none;
+            }
+            .header__user_name:hover{
+                color: #6B7A6F;
+            }
+
+            .header__wrapper{
+                min-width: 1000px;
+                max-width: 1100px;
+                display: flex;
+                gap: 5px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .body{
+                {#background-color: #F2D0CE;#}
+
+            }
+            .container_main{
+                padding: 20px 25px 20px;
+                min-width: 1000px;
+                max-width: 1100px;
+                {#background-color: white;#}
+
+
+                border-radius: 20px;
+                margin: auto;
+
+            {#background-color: #edf5ff;#}
+            {#box-shadow: 0 0 4px rgb(255,212,212); #}
+            }
+
+    </style>
+    {% endif %}
+    <style>
+        .mobile__footer_wrapper{
+            display: block;
+            padding: 0 10px 20px;
+            box-shadow: 0 0 10px rgba(107, 122, 111, 0.4);
+            margin: 40px 0 0;
+
+        }
+        .mobile__footer__name{
+            margin: 10px 0 10px;
+            font-size: 20px;
+
+        }
+        .mobile__footer__link{
+            margin: 10px 0 10px;
+            color: black;
+            text-decoration: none;
+            &:hover{
+                color: #CD180E;
+            }
+
+        }
+        .mobile__footer__system_info{
+            margin: 10px 0 10px;
+            display: flex;
+            justify-content: right;
+
+        }
+        .mobile__footer__main_links{
+            margin: 10px 0 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .mobile__footer__main_links__other{
+            display: flex;
+            gap: 10px;
+            flex-direction: row;
+        }
+        .mobile__footer__main_link {
+            flex: 1;
+            color: black;
+            text-decoration: none;
+            &:hover{
+                color: #CD180E;
+            }
+        }
+
+        .mobile__footer__main_link_separator{
+            width: 1px;
+            background-color: black;
+        }
+    </style>
+</head>
+{% if request.user_agent.is_mobile %}
+    <body class="mobile_body">
+
+        <div class="mobile_find_window_wrapper hide" id="mobile_find_wrapper">
+            <div class="mobile_find_window__active_buttons">
+                <input type="text" name="query" id='header__inputFind' class="mobile_header__input_field" placeholder='Поиск'>
+                <div class="mobile_find_window_cancel" id="mobile_find_window_cancel">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" style="enable-background:new 0 0 512.021 512.021;" xml:space="preserve" width="24" height="24">
+                    <g>
+                        <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                    </g></svg>
+                </div>
+            </div>
+            <div id="mobile_find_window__container">
+
+            </div>
+        </div>
+        <div class="mobile_user_menu_wrapper hide" id="mobile_user_menu">
+            <div class="mobile_user_menu__header_cancel" id="mobile_user_menu__cancel">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 512.021 512.021" style="enable-background:new 0 0 512.021 512.021;" xml:space="preserve" width="24" height="24">
+                    <g>
+                        <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                    </g></svg>
+            </div>
+            <a href="/accounts/register/" style="text-decoration: none; color: black;"><div class="mobile_user_menu_button_info">Profile</div></a>
+            <div class="header__user_menu__gap"></div>
+            <a href='/' class="mobile_user_menu_button"><div class="mobile_user_menu_button_info">Главное меню</div></a>
+            <div class="header__user_menu__gap"></div>
+            <a href='/favorites' class="mobile_user_menu_button"><div class="mobile_user_menu_button_info">Избранное</div></a>
+            <a href='/pin' class="mobile_user_menu_button"><div class="mobile_user_menu_button_info">Буду смотреть</div></a>
+            <a href='/viewed' class="mobile_user_menu_button"><div class="mobile_user_menu_button_info">Оценки</div></a>
+            <div class="header__user_menu__gap"></div>
+            <a class="mobile_user_menu_button" href="{% url "logout" %}"><div class="mobile_user_menu_button_info">Выйти
+            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 30 30" width="15" height="15"><path d="M11.5,16A1.5,1.5,0,0,0,10,17.5v.8A2.7,2.7,0,0,1,7.3,21H5.7A2.7,2.7,0,0,1,3,18.3V5.7A2.7,2.7,0,0,1,5.7,3H7.3A2.7,2.7,0,0,1,10,5.7v.8a1.5,1.5,0,0,0,3,0V5.7A5.706,5.706,0,0,0,7.3,0H5.7A5.706,5.706,0,0,0,0,5.7V18.3A5.706,5.706,0,0,0,5.7,24H7.3A5.706,5.706,0,0,0,13,18.3v-.8A1.5,1.5,0,0,0,11.5,16Z"/><path d="M22.561,9.525,17.975,4.939a1.5,1.5,0,0,0-2.121,2.122l3.411,3.411L7,10.5a1.5,1.5,0,0,0,0,3H7l12.318-.028-3.467,3.467a1.5,1.5,0,0,0,2.121,2.122l4.586-4.586A3.505,3.505,0,0,0,22.561,9.525Z"/></svg>
+            </div></a>
+        </div>
+        <header class="mobile_header__wrapper">
+            <div class="mobile_header__name_site">
+                <a class="link" href="/?update=1">RATEFILM</a>
+            </div>
+            <div class="mobile_header__interactive_buttons">
+                <div class="mobile__find_wrapper" id="mobile_find">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 513.749 513.749" style="enable-background:new 0 0 513.749 513.749;" xml:space="preserve" width="24" height="24">
+                    <g>
+                        <path d="M504.352,459.061l-99.435-99.477c74.402-99.427,54.115-240.344-45.312-314.746S119.261-9.277,44.859,90.15   S-9.256,330.494,90.171,404.896c79.868,59.766,189.565,59.766,269.434,0l99.477,99.477c12.501,12.501,32.769,12.501,45.269,0   c12.501-12.501,12.501-32.769,0-45.269L504.352,459.061z M225.717,385.696c-88.366,0-160-71.634-160-160s71.634-160,160-160   s160,71.634,160,160C385.623,314.022,314.044,385.602,225.717,385.696z"/>
+                    </g>
+                    </svg>
+                </div>
+                {% if request.user.is_authenticated %}
+                        <a href="#" id="field_menu" class="header__user_name">
+                       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="24" height="24">
+                                <g>
+                                    <path d="M480,224H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h448c17.673,0,32-14.327,32-32S497.673,224,480,224z"/>
+                                    <path d="M32,138.667h448c17.673,0,32-14.327,32-32s-14.327-32-32-32H32c-17.673,0-32,14.327-32,32S14.327,138.667,32,138.667z"/>
+                                    <path d="M480,373.333H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h448c17.673,0,32-14.327,32-32S497.673,373.333,480,373.333z"/>
+                                </g>
+                       </svg>
+                        </a>
+                {% else %}
+                    <a href="/accounts/login/" class="header__user_name">
+                        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="26" height="26"><path d="m24,4.5v15c0,2.481-2.019,4.5-4.5,4.5h-3c-.829,0-1.5-.671-1.5-1.5s.671-1.5,1.5-1.5h3c.827,0,1.5-.673,1.5-1.5V4.5c0-.827-.673-1.5-1.5-1.5h-3c-.829,0-1.5-.671-1.5-1.5s.671-1.5,1.5-1.5h3c2.481,0,4.5,2.019,4.5,4.5Zm-6.161,10.303l-5.294,5.273c-.604.604-1.417.924-2.259.924-.433,0-.873-.084-1.295-.258-1.223-.503-1.985-1.607-1.99-2.879v-.863h-3.5c-1.93,0-3.5-1.57-3.5-3.5v-3c0-1.93,1.57-3.5,3.5-3.5h3.5v-.859c.006-1.278.769-2.38,1.992-2.883,1.242-.51,2.64-.249,3.556.668l5.29,5.266s.001.002.002.003c1.544,1.545,1.544,4.062,0,5.608Zm-2.12-3.487l-5.291-5.268c-.078-.079-.228-.045-.295-.017-.001,0-.132.055-.133.116v2.352c0,.829-.671,1.5-1.5,1.5H3.5c-.271,0-.5.229-.5.5v3c0,.276.224.5.5.5h5c.829,0,1.5.671,1.5,1.5v2.357c0,.056.131.11.132.11.069.029.218.062.292-.014l5.294-5.273c.374-.374.375-.987,0-1.364Z"/></svg>
+
+                        </a>
+                {% endif %}
+            </div>
+        </header>
+        <div class="mobile_container_main" style="">
+            {% block mobile_content %}{% endblock %}
+        </div>
+        <footer class="mobile__footer_wrapper">
+            <div class="mobile__footer__name">RateFilm</div>
+
+            <div class="mobile__footer__main_links">
+                <a class="mobile__footer__main_link" href="/">Главная</a>
+                <div class="mobile__footer__main_links__other">
+                    <a class="mobile__footer__main_link" href="{% url 'viewed' %}">Оценки</a>
+                    <div class="mobile__footer__main_link_separator"></div>
+                    <a class="mobile__footer__main_link" href="{% url 'favorites' %}">Избранные</a>
+                    <div class="mobile__footer__main_link_separator"></div>
+                    <a class="mobile__footer__main_link" href="/accounts/register/">Профиль</a>
+                </div>
+            </div>
+            <a class="mobile__footer__link" href="https://t.me/ratefilm_callback_bot">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" width="20" height="20">
+                <g id="Artboard">
+                    <path style="fill-rule:evenodd;clip-rule:evenodd;" d="M12,0C5.373,0,0,5.373,0,12s5.373,12,12,12s12-5.373,12-12S18.627,0,12,0z    M17.562,8.161c-0.18,1.897-0.962,6.502-1.359,8.627c-0.168,0.9-0.5,1.201-0.82,1.23c-0.697,0.064-1.226-0.461-1.901-0.903   c-1.056-0.692-1.653-1.123-2.678-1.799c-1.185-0.781-0.417-1.21,0.258-1.911c0.177-0.184,3.247-2.977,3.307-3.23   c0.007-0.032,0.015-0.15-0.056-0.212s-0.174-0.041-0.248-0.024c-0.106,0.024-1.793,1.139-5.062,3.345   c-0.479,0.329-0.913,0.489-1.302,0.481c-0.428-0.009-1.252-0.242-1.865-0.442c-0.751-0.244-1.349-0.374-1.297-0.788   c0.027-0.216,0.324-0.437,0.892-0.663c3.498-1.524,5.831-2.529,6.998-3.015c3.333-1.386,4.025-1.627,4.477-1.635   C17.472,7.214,17.608,7.681,17.562,8.161z"/>
+                </g>
+                </svg>
+                Обратная связь
+            </a>
+
+            <div class="mobile__footer__system_info">© 2025 RateFilm. Версия 0.0.7</div>
+            <div class="mobile__footer__system_info">GogolevBat prod.</div>
+
+        </footer>
+    </body>
+
+{% else %}
+    <body class="body">
+    <header class="header__site" id="header">
+        <div class='header__wrapper'>
+            <div style="flex: 1; left: 0">
+                <a href="{% url 'home' %}" class="header__menu_name">RATEFILM</a>
+            </div>
+            <div style="flex: 1; ">
+                <div style="display: flex; align-items: center; justify-content: right;">
+                    <form action="/find/" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                        {% if not find_search %}
+                            <input type="text" name="query" id='header__inputFind' class="header__input_field" placeholder='Поиск'>
+                        {% endif %}
+                    </form>
+                    {% if request.user.is_authenticated %}
+                        <a href="/accounts/register/" id="user_name_field" class="header__user_name">Profile</a>
+{#                        {{ request.user.username | title }}#}
+                    {% else %}
+                        <a href="/accounts/login/" class="header__user_name">
+                            Log
+                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="26" height="26"><path d="m24,4.5v15c0,2.481-2.019,4.5-4.5,4.5h-3c-.829,0-1.5-.671-1.5-1.5s.671-1.5,1.5-1.5h3c.827,0,1.5-.673,1.5-1.5V4.5c0-.827-.673-1.5-1.5-1.5h-3c-.829,0-1.5-.671-1.5-1.5s.671-1.5,1.5-1.5h3c2.481,0,4.5,2.019,4.5,4.5Zm-6.161,10.303l-5.294,5.273c-.604.604-1.417.924-2.259.924-.433,0-.873-.084-1.295-.258-1.223-.503-1.985-1.607-1.99-2.879v-.863h-3.5c-1.93,0-3.5-1.57-3.5-3.5v-3c0-1.93,1.57-3.5,3.5-3.5h3.5v-.859c.006-1.278.769-2.38,1.992-2.883,1.242-.51,2.64-.249,3.556.668l5.29,5.266s.001.002.002.003c1.544,1.545,1.544,4.062,0,5.608Zm-2.12-3.487l-5.291-5.268c-.078-.079-.228-.045-.295-.017-.001,0-.132.055-.133.116v2.352c0,.829-.671,1.5-1.5,1.5H3.5c-.271,0-.5.229-.5.5v3c0,.276.224.5.5.5h5c.829,0,1.5.671,1.5,1.5v2.357c0,.056.131.11.132.11.069.029.218.062.292-.014l5.294-5.273c.374-.374.375-.987,0-1.364Z"/></svg>
+
+                            </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <div style="height: 75px;"></div>
+
+<div class="container_main" style="">
+    {% block desktop_content %}{% endblock %}
+
+    {% block content %}{% endblock %}
+</div>
+<div class="container">
+    {% block desktop_dop %}{% endblock %}
+    {% block dop %}{% endblock %}
+</div>
+
+    <style>
+        .basement_container{
+            height: 200px;
+            {#background-color: black;#}
+            {#display: flex;#}
+            {#justify-content: center;#}
+
+        }
+        .basement__wrapper{
+            {#width: 1000px;#}
+            height: 200px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            justify-content: space-between;
+            {#display: grid;#}
+            {#grid-template-columns: 220px 520px 220px;#}
+            {#gap: 10px;#}
+            background-color: white;
+        }
+        .basement__creators{
+            font-size: 20px;
+            flex: 1;
+        }
+        .basement__main_container{
+            border: 1px solid black;
+            position: relative;
+            width: 520px;
+            {#background-color: palevioletred;#}
+        }
+        .basement__links{
+            text-align: right;
+            flex: 1;
+            font-size: 20px;
+        }
+        .basement__main_text_footer{
+            display: flex;
+            font-size: 20px;
+            justify-content: center;
+        }
+        .basement__buttons__wrapper{
+            margin-top: 15px;
+            padding: 0 10px 0;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .basement__button{
+            width: 245px;
+            font-size: 20px;
+            padding: 13px 0 14px;
+            display: flex;
+            justify-content: center;
+            border-radius: 90px;
+            color: black;
+            text-decoration: none;
+            background-color: #e6e6e6;
+        }
+        .basement__button:hover{
+            {#background-color: gray;#}
+        }
+        .basement__main_links{
+
+            font-size: 20px;
+            width: 500px;
+            bottom: 10px;
+            position: absolute;
+            padding: 0 10px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .basement__main_link{
+            color: black;
+            text-decoration: none;
+        }
+        .footer_container{
+
+        }
+    </style>
+    <footer class="footer_container">
+        <div class="basement_container">
+            <div class="basement__wrapper">
+                <div class="basement__creators">
+                    Создатели
+                    <ul style="text-align: left">
+                        <li>Гоголев Евгений</li>
+                        <li>Чернышов Егор</li>
+                        <li>Зайналов Амин</li>
+                        <li>Горбачев Алексей</li>
+                    </ul>
+                </div>
+                <div class="basement__main_container">
+                    <div class="basement__main_text_footer">Ой, страница закончилась</div>
+                    <div class="basement__buttons__wrapper">
+                    {% if is_menu %}
+                        <a class="basement__button" href="/?update=1">Обновить меню</a>
+                    {% else %}
+                        <a class="basement__button" href="">Обновить страницу</a>
+                        <a class="basement__button" href="/">Главное меню</a>
+                    {% endif %}
+                    </div>
+                    <div class="basement__main_links">
+                        <a class="basement__main_link" href="/about-us">
+                            О нас
+                        </a>
+                        <a class="basement__main_link" href="https://t.me/ratefilm_callback_bot">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve" width="20" height="20">
+                            <g id="Artboard">
+                                <path style="fill-rule:evenodd;clip-rule:evenodd;" d="M12,0C5.373,0,0,5.373,0,12s5.373,12,12,12s12-5.373,12-12S18.627,0,12,0z    M17.562,8.161c-0.18,1.897-0.962,6.502-1.359,8.627c-0.168,0.9-0.5,1.201-0.82,1.23c-0.697,0.064-1.226-0.461-1.901-0.903   c-1.056-0.692-1.653-1.123-2.678-1.799c-1.185-0.781-0.417-1.21,0.258-1.911c0.177-0.184,3.247-2.977,3.307-3.23   c0.007-0.032,0.015-0.15-0.056-0.212s-0.174-0.041-0.248-0.024c-0.106,0.024-1.793,1.139-5.062,3.345   c-0.479,0.329-0.913,0.489-1.302,0.481c-0.428-0.009-1.252-0.242-1.865-0.442c-0.751-0.244-1.349-0.374-1.297-0.788   c0.027-0.216,0.324-0.437,0.892-0.663c3.498-1.524,5.831-2.529,6.998-3.015c3.333-1.386,4.025-1.627,4.477-1.635   C17.472,7.214,17.608,7.681,17.562,8.161z"/>
+                            </g>
+                            </svg>
+                            Обратная связь
+                        </a>
+                    </div>
+                </div>
+                <div class="basement__links">
+                Ссылки
+                    <ul>
+                        <li>Uicons от <a href="https://www.flaticon.com/uicons">Flaticon</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
+
+        </div>
+    </footer>
+    <style>
+        .modal_window{
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: none;
+            justify-content: center;
+            align-content: center;
+            width: 100%;
+            height: 100%;
+            z-index: 1002;
+            background-color: rgba(0, 0, 0, 0.50);
+        }
+        .modal_container{
+            position: relative;
+            padding: 10px 10px 10px;
+            font-size: 20px;
+            height: 200px;
+            width: 300px;
+            background-color: white;
+        }
+        .modal_button{
+            position: absolute;
+            width: 290px;
+            bottom: 10px;
+            text-align: center;
+            padding: 5px 5px 5px;
+            border-radius: 90px;
+            background-color: #d8b4b4;
+            font-size: 20px;
+        }
+        .modal_button:hover{
+            background-color: #b39595;
+        }
+    </style>
+    <div class="modal_window" id="internet_modal_window">
+        <div class="modal_container">
+            Ошибка при передаче информации
+            <div class="modal_button" id="modal_button">ОК</div>
+        </div>
+    </div>
+    <script>
+        const modal_button = document.getElementById('modal_button')
+        const modal_window = document.getElementById('internet_modal_window')
+        modal_button.addEventListener('click', event => {
+            modal_window.style.display = 'none'
+        })
+
+        function internet_modal_window_show(){
+            console.log('internet_modal_window_show')
+            const modal_window = document.getElementById('internet_modal_window')
+            modal_window.style.display = 'flex'
+        }
+    </script>
+{#<iframe width="720" height="405"#}
+{#        src="https://rutube.ru/play/embed/caafe83ff1c6ed38d394635b83ece578/?ip=175de77fc839f95367198cf075186903"#}
+{#        frameBorder="0" allow="clipboard-write;"></iframe>#}
+{#<iframe src="https://store.steampowered.com/widget/892970/" frameborder="0" width="646" height="190"></iframe>#}
+</body>
+{% endif %}
+
+</html>

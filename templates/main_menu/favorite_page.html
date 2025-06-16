@@ -1,0 +1,254 @@
+{% extends 'title/../universe/../universe/base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+    <style>
+        {#.poster-container {#}
+        {#    display: flex;#}
+        {#    overflow-x: auto;#}
+        {#    white-space: nowrap;#}
+        {#}#}
+        {##}
+        {#.poster-item {#}
+        {#    position: relative;#}
+        {#    margin-right: 10px;#}
+        {#    display: block;#}
+        {#}#}
+        {##}
+        {#.poster-item img {#}
+        {#    width: 200px;#}
+        {#    height: 300px;#}
+        {#    object-fit: cover;#}
+        {#    display: block; /* Чтобы убрать небольшой отступ снизу */#}
+        {#}#}
+        {##}
+        {#.poster-title {#}
+        {#    position: absolute;#}
+        {#    bottom: 0;#}
+        {#    left: 0;#}
+        {#    width: 100%;#}
+        {#    background-color: rgba(0, 0, 0, 0.7);#}
+        {#    color: white;#}
+        {#    padding: 10px;#}
+        {#    box-sizing: border-box;#}
+        {#}#}
+        {##}
+        {#.poster-rate {#}
+        {#    position: absolute;#}
+        {#    top: 10px;#}
+        {#    left: 0;#}
+        {#    width: 20%;#}
+        {#    background-color: rgba(255, 209, 218, 0.9);#}
+        {#    color: black;#}
+        {#    padding: 5px;#}
+        {#    box-sizing: border-box;#}
+        {#    border-bottom-right-radius: 90px;#}
+        {#    border-top-right-radius: 90px;#}
+        {#}#}
+    </style>
+    <div>
+{#        {% if seq_and_preq %}#}
+{#            <h3>Сиквелы и прикелы</h3>#}
+{#        {% endif %}#}
+{#        <div class="poster-container">#}
+{#            {% for title in titles %}#}
+{#                <div class="poster-item">#}
+{#                    <a href="/title/{{ object.id }}">#}
+{#                        <img src="{{ object.poster }}" alt="{{ object.name }}">#}
+{#                        <div class="poster-title">{{ object.name }}</div>#}
+{#                        <div class="poster-rate">{{ object.kp_rate }}</div>#}
+{#    #}
+{#                    </a>#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <h1>Избранное</h1>
+    </div>
+    <style>
+    .list_titles_on_grid{
+        background-color: #f3dcf2;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        
+        grid-template-rows: 225px 225px;
+        grid-auto-flow: row;
+        gap: 20px;
+        padding: 20px 20px 20px;
+        overflow:hidden;
+    }
+    .info_fact__poster_item {
+        position: relative;
+        display: inline-block;
+    }
+    .info_fact__poster_item img {
+        width: 150px;
+        height: 225px;
+        object-fit: cover;
+        display: block; /* Чтобы убрать небольшой отступ снизу */
+    }
+    .title_item_poster_info{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+     .poster-imdbrate {
+        top: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgb(245, 197, 24);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .poster-kprate {
+        top: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgba(255,84,1, 0.9);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .poster-ratefilm{
+        top: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgba(219, 112, 147, 0.9);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .poster-user_rate{
+        top: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .list_titles__title_rates{
+        display: flex;
+        gap: 10px;
+        flex-direction: row;
+    }
+    .list_titles__title__rates_wrapper{
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-direction: row;
+    }
+    .list_titles__title__info{
+                position: relative;
+                display: block;
+                flex-grow: 1;
+                overflow: scroll;}
+    </style>
+    <div class="list_titles_on_grid">
+        {% for object in titles %}
+            <a href="/title/{{ object.id }}" style="text-decoration: none">
+                <div class="title_item_poster_info">
+                    <div class="info_fact__poster_item">
+                        <img src="{{ object.poster }}" alt="{{ object.name }}">
+                    </div>
+                    <div class="list_titles__title__info">
+                        {% if object.object_type == 0 %}
+                            <div class="list_titles__title__rates_wrapper">
+                                <div class="poster-user_rate">{{ object.user_rate }}</div>
+                                <div class="list_titles__title_rates">
+                                    <div class="poster-ratefilm">{{ object.rate_film }}</div>
+                                    <div class="poster-kprate">{{ object.kp_rate }}</div>
+                                    <div class="poster-imdbrate">{{ object.imdb_rate }}</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <h2 style="color: black">{{object.name}}</h2>
+                    </div>
+                        
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block mobile_content %}
+    <style>
+    .mobile_user_titles__title_container{
+        background-color: #F2D0CE;
+        display: flex;
+        overflow: hidden;
+        }
+        .mobile_user_titles__title_poster{
+            flex: 1;
+        }
+        .mobile_user_titles__title_info{
+            flex: 5;
+            height: 100px;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        .mobile_user_titles_poster_img {
+            height: 100px;
+            background-color: #ffffff;
+            object-fit: cover;
+            display: block;
+        }
+        .mobile_user_titles__title_info__name{
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .mobile_user_titles_wrapper{
+            padding: 10px 10px 10px;
+        }
+        .mobile_user_titles_container{
+            display: grid;
+            grid-template-columns: repeat(2, 49%);
+
+            grid-template-rows: 100px;
+
+            grid-auto-flow: row;
+            gap: 5px;
+        }
+        .mobile_user_name_of_page{
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="mobile_user_titles_wrapper">
+        <div class="mobile_user_name_of_page">Избранные</div>
+        <div class="mobile_user_titles_container">
+            {% for object in titles %}
+                {% if object.object_type == 0 %}
+                    <a class="link" href="/title/{{ object.id }}">
+                {% else %}
+                    <a class="link" href="/person/{{ object.id }}">
+                {% endif %}
+                    <div class="mobile_user_titles__title_container">
+                        <div class="mobile_user_titles__title_poster">
+                            <img class="mobile_user_titles_poster_img" src="{{ object.poster }}" onerror="this" alt="{{ object.name }}">
+                        </div>
+                        <div class="mobile_user_titles__title_info">
+                            <div class="mobile_user_titles__title_info__name"> {{ object.name }} </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

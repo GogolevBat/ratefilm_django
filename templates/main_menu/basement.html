@@ -1,0 +1,1055 @@
+{% extends 'title/../universe/../universe/base.html' %}
+
+{% block head %}
+    {% load static %}
+    <link href="{% static 'main_menu/css/menu.css' %}" rel="stylesheet">
+
+    <style>
+        .style_title {
+            background-color: #fff2fe;
+            border: 1px solid #f0fad4;
+            color: #000000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+    </style>
+    <script>
+        const speed_scroll = 630
+
+        function scrol_button_active_left(button_scroll) {
+            var button_scroll_parent = button_scroll.parentElement
+            button_scroll.addEventListener('click', event => {
+                button_scroll_parent.scrollTo({
+                    left: button_scroll_parent.scrollLeft - speed_scroll,
+                    behavior: 'smooth'
+                })
+            })
+        }
+
+        function scrol_button_active_right(button_scroll) {
+            var button_scroll_parent = button_scroll.parentElement
+            button_scroll.addEventListener('click', event => {
+                button_scroll_parent.scrollTo({
+                    left: button_scroll_parent.scrollLeft + speed_scroll,
+                    behavior: 'smooth'
+                })
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const buttons_scroll_left = document.getElementsByClassName('button_scroll_content_left');
+            Array.from(buttons_scroll_left).forEach(button_scroll => {
+                var button_scroll_parent = button_scroll.parentElement
+                button_scroll.addEventListener('click', event => {
+                    button_scroll_parent.scrollTo({
+                        left: button_scroll_parent.scrollLeft - speed_scroll,
+                        behavior: 'smooth'
+                    })
+                })
+            })
+            const buttons_scroll_right = document.getElementsByClassName('button_scroll_content_right');
+            Array.from(buttons_scroll_right).forEach(button_scroll => {
+                var button_scroll_parent = button_scroll.parentElement
+                button_scroll.addEventListener('click', event => {
+                    button_scroll_parent.scrollTo({
+                        left: button_scroll_parent.scrollLeft + speed_scroll,
+                        behavior: 'smooth'
+                    })
+                })
+            })
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const person_titles__point_of_interes = document.getElementsByClassName('person_titles__point_of_interes');
+            const main_container = document.getElementsByClassName('container_main');
+
+            Array.from(person_titles__point_of_interes).forEach(point_person_titles => {
+                var point_person_titles_parent = point_person_titles.parentElement
+                window.addEventListener('resize', () => {
+                    let bounds = inputFind.getBoundingClientRect();
+                    point_person_titles_parent.style.width = (main_container.getBoundingClientRect().width - 210) + 'px';
+                });
+            })
+
+        });
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const add_content__on_menu = document.getElementById('add_content__on_menu');
+            const new_content = document.getElementById('new-content')
+            let page = 0
+            add_content__on_menu.addEventListener('click', event => {
+                page++
+                content_for_menu_get()
+                add_content__on_menu.style.display = 'block'
+
+                if (page > 3) {
+                    add_content__on_menu.style.display = 'none'
+                }
+            });
+
+            function content_for_menu_get() {
+                add_content__on_menu.style.display = 'none'
+
+                fetch(`/add/content`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        text_html = ""
+                        for (const content_line of data.contents_for_menu) {
+                            text_html += `
+                                    <div class="skipar" style="height: 30px"></div>
+
+                                    <div class="unit_of_content_container">
+                                        `
+                            if (content_line.content.titles) {
+                                text_html += `
+                                            <div class="text_title_for_menu_list">${content_line.content.heading}</div>
+
+                                            `
+                                if (content_line.type === 'list_titles') {
+                                    text_html += `
+                                                <div class="poster-container_wrapper">
+                                                    <div class="poster-container" id="poster-container">
+                                                        <a class="button_scroll_content_left"  onclick="scrol_button_active_left(this)">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                                                 height="20">
+                                                                <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                                                            </svg>
+
+                                                        </a>
+                                                        <a class="button_scroll_content_right" onclick="scrol_button_active_right(this)" id="test_button">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                                                 height="20">
+                                                                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                                            </svg>
+                                                        </a>
+                                                        `
+                                    for (const title of content_line.content.titles) {
+                                        text_html += `
+                                                            <div class="poster-item">
+                                                                <a href="/title/${title.id}">
+                                                                    <img src="${title.poster}" onerror="this" alt="${title.name}">
+                                                                    <div class="poster-title">${title.name}</div>
+                                                                    <div class="rate_poster ratefilm">${title.rate_film}</div>
+                                                                    <div class="rate_poster kprate">${title.kp_rate}</div>
+                                                                    <div class="rate_poster imdbrate">${title.imdb_rate}</div>
+
+                                                                </a>
+                                                            </div>
+                                                        `
+                                    }
+                                    text_html += `
+                                                    </div>
+                                                </div>
+                                            `
+                                } else if (content_line.type === 'info_fact') {
+                                    text_html += `
+                                                <div class="info_fact_container">
+                                                    `
+                                    for (const title of content_line.content.titles) {
+                                        text_html += `
+                                                        <a href="/title/${title.id}" style="text-decoration: none">
+                                                            <div style="position: relative; display: flex; flex-direction: row; gap: 10px; height: 150px; color: black;  ">
+                                                                <div class="info_fact__poster_item">
+
+                                                                    <img src="${title.poster}" alt="${title.name}">
+
+                                                                </div>
+                                                                <div class="info_fact__inforamtion_or_fact_text">
+                                                                    <div style="text-overflow: ellipsis;"><h4
+                                                                            style="text-overflow: ellipsis;">${title.name}</h4></div>
+                                                                    <div class="info_fact__inforamtion_or_fact_text__text">
+                                                                        ${title.text}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    `
+                                    }
+                                    text_html += `
+                                                </div>
+                                            `
+                                } else if (content_line.type === 'person_titles') {
+                                    text_html += `
+                                                <div class="person_titles_wrapper">
+                                                    <div class="person_titles_naming"></div>
+                                                    <div class="person_titles_container">
+                                                        <div class="person_titles__titles_container">
+                                                            <div class="poster-container_wrapper_something_to_titles">
+                                                                <var style="display: none" class="person_titles__point_of_interes"></var>
+
+                                                                <div class="poster-container" id="poster-container">
+                                                                    <a class="button_scroll_content_left">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                                                             height="20">
+                                                                            <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                                                                        </svg>
+                                                                    </a>
+                                                                    <a class="button_scroll_content_right" id="test_button">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                                                             height="20">
+                                                                            <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                                                        </svg>
+                                                                    </a>
+                                                                    `
+                                    for (const title of content_line.content.titles) {
+                                        text_html += `
+                                                                        <div class="poster-item">
+                                                                            <a href="/title/${title.id}">
+                                                                                <img src="${title.poster}" alt="${title.name}">
+                                                                                <div class="poster-title">${title.name}</div>
+                                                                                <div class="rate_poster ratefilm">${title.rate_film}</div>
+                                                                                <div class="rate_poster kprate">${title.kp_rate}</div>
+                                                                                <div class="rate_poster imdbrate">${title.imdb_rate}</div>
+
+                                                                            </a>
+                                                                        </div>
+                                                                    `
+                                    }
+                                    text_html += `
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="person_titles__person_container">
+                                                            <div class="poster-item">
+                                                                <a href="/person/${content_line.content.person.id}">
+                                                                    <img src="${content_line.content.person.photo}"
+                                                                         alt="${content_line.content.person.name}">
+                                                                    <div class="poster-title">${content_line.content.person.name}</div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            `
+                                } else if (content_line.type === 'movie_titles') {
+                                    text_html += `
+                                                <div class="movie_titles_wrapper">
+                                                    <div class="movie_titles_container">
+                                                        <div class="movie_titles__movie_container">
+                                                            <div class="poster-item">
+                                                                <a href="/title/${content_line.content.title.id}">
+                                                                    <img src="${content_line.content.title.poster}"
+                                                                         alt="${content_line.content.title.name}">
+                                                                    <div class="poster-title">${content_line.content.title.name}</div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="movie_titles__titles_container">
+                                                            <div class="poster-container_wrapper_something_to_titles">
+                                                                <var style="display: none" class="person_titles__point_of_interes"></var>
+
+                                                                <div class="poster-container" id="poster-container">
+                                                                    <a class="button_scroll_content_left">
+                                                                        <-
+                                                                    </a>
+                                                                    <a class="button_scroll_content_right" id="test_button">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                                                             height="20">
+                                                                            <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                                                        </svg>
+                                                                    </a>
+                                                                    `
+                                    for (const title of content_line.content.titles) {
+                                        text_html += `
+                                                                        <div class="poster-item">
+                                                                            <a href="/title/${title.id}">
+                                                                                <img src="${title.poster}" alt="${title.name}">
+                                                                                <div class="poster-title">${title.name}</div>
+                                                                                <div class="rate_poster ratefilm">${title.rate_film}</div>
+                                                                                <div class="rate_poster kprate">${title.kp_rate}</div>
+                                                                                <div class="rate_poster imdbrate">${title.imdb_rate}</div>
+
+                                                                            </a>
+                                                                        </div>
+                                                                    `
+                                    }
+                                    text_html += `
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            `
+                                }
+                                text_html += `
+                                        `
+                            }
+                            text_html += `
+                                    </div>
+                                `
+                        }
+                        new_content.innerHTML += text_html
+                    });
+            }
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <style>
+        .menu_link{
+                color: black;
+                &:hover{
+                    color: #CD180E;
+                }
+            }
+        .link_user_buttons {
+
+            text-transform: uppercase;
+            position: relative;
+            display: block;
+        {#background-color: palevioletred;#} box-shadow: 0 5px 10px rgba(107, 122, 111, 0.40);
+
+            padding: 5px 5px 5px;
+            font-size: 20px;
+            border-radius: 90px;
+            text-decoration: none;
+            transition: all .3s;
+
+            color: black;
+            overflow: hidden;
+            z-index: 10;
+
+            &.middle {
+                display: flex;
+                justify-content: center;
+
+            }
+
+            &:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+
+                border-radius: 10rem;
+                z-index: -2;
+            }
+
+            &:before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 100%;
+            {#background-color: #A4DC71;#} background-color: #CD180E;
+
+                color: white;
+                transition: all .3s;
+                border-radius: 10rem;
+                z-index: -1;
+            }
+
+            &:hover {
+                color: white;
+
+                &:before {
+                    width: 100%;
+                }
+            }
+        }
+
+        .text_title_for_menu_list {
+            font-size: 35px;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 20px;
+        }
+
+        .unit_of_content_container {
+            margin-top: 20px;
+            padding: 5px 25px 15px;
+        {#background-color: white;#} border-radius: 40px;
+        }
+    </style>
+    {% if request.user.is_authenticated %}
+        <h2><a href="accounts/register/" style="color: black">
+            <img src="https://avatars.mds.yandex.net/i?id=f7d6fe8915ceeefa21ee33030f762714e26a235d-11844875-images-thumbs&n=13"
+                 alt="mdo" width="64" height="64" class="rounded-circle" style="border: 2px solid black;"><span></span></a>
+        </h2>
+
+        <div style="display: flex; gap: 20px; flex-direction: row;">
+            <div style="flex: 1; text-align: center;">
+                <a class="link_user_buttons" href="/favorites">Избранные</a>
+            </div>
+
+            <div style="flex: 1; text-align: center;">
+                <a class="link_user_buttons" href="/viewed">Оценки (Просмотрено)</a>
+            </div>
+
+            <div style="flex: 1; text-align: center;">
+                <a class="link_user_buttons" href="/pin">Хочу посмотреть</a>
+            </div>
+        </div>
+        <div style="height: 50px"></div>
+        <a class="link_user_buttons middle" href="/?update=1">Обновить рекомендации</a>
+    {% endif %}
+    {% for content_line in contents_for_menu %}
+        <div class="skipar" style="height: 15px"></div>
+        <div class="skipar" style="height: 1px; background-color: black"></div>
+        <div class="skipar" style="height: 15px"></div>
+
+        <div class="unit_of_content_container">
+            {% if content_line.content.titles %}
+                <div class="text_title_for_menu_list">{{ content_line.content.heading | safe }}</div>
+
+                {% if content_line.type == 'top' %}
+                    <div class="top_titles_wrapper">
+                        <div class="poster-container">
+                            <a class="button_scroll_content_left">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                     height="20">
+                                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                                </svg>
+                            </a>
+                            <a class="button_scroll_content_right" id="test_button">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                     height="20">
+                                    <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                </svg>
+                            </a>
+                            {% for title in content_line.content.titles %}
+                                {% if title.type_object == 2 %}
+                                    <a href="/person/{{ title.id }}">
+                                {% else %}
+                                    <a href="/title/{{ title.id }}">
+                                {% endif %}
+                            <div class="poster-item-wrapper">
+                                {% if title.kp_rate or title.rate_film or title.imdb_rate %}
+                                    <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                    <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                    <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+                                {% endif %}
+                                {% if forloop.counter == 1 %}
+                                    <div class="top_titles_main_block">
+                                        <div class="top_titles_main_block_text">1</div>
+                                    </div>
+                                {% else %}
+                                    <div class="top_titles_block">
+                                        <div class="top_titles_block_text">{{ forloop.counter }}</div>
+                                    </div>
+                                {% endif %}
+                                <div class="poster-item-top-titles">
+                                    <img src="{{ title.poster }}" alt="{{ title.name }}">
+                                </div>
+                                <div class="top-titles-title-name">
+                                    {{ title.name }}
+                                </div>
+                            </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% elif content_line.type == 'list_titles' %}
+                    <div class="poster-container_wrapper">
+                        <div class="poster-container" id="poster-container">
+                            <a class="button_scroll_content_left">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                     height="20">
+                                    <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                                </svg>
+
+                            </a>
+                            <a class="button_scroll_content_right" id="test_button">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20"
+                                     height="20">
+                                    <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                </svg>
+                            </a>
+                            {% for title in content_line.content.titles %}
+                                <div class="poster-item">
+                                    <a href="/title/{{ title.id }}">
+                                        <img src="{{ title.poster }}" onerror="this" alt="{{ title.name }}">
+                                        <div class="poster-title">{{ title.name }}</div>
+                                        <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                        <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                        <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% elif content_line.type == 'info_fact' %}
+                    <div class="info_fact_container">
+                        {% for title in content_line.content.titles %}
+                            <a href="/title/{{ title.id }}" style="text-decoration: none">
+                                <div style="position: relative; display: flex; flex-direction: row; gap: 10px; height: 150px; color: black;  ">
+                                    <div class="info_fact__poster_item">
+
+                                        <img src="{{ title.poster }}" alt="{{ title.name }}">
+
+                                    </div>
+                                    <div class="info_fact__inforamtion_or_fact_text">
+                                        <div style="text-overflow: ellipsis;"><h4
+                                                style="text-overflow: ellipsis;">{{ title.name }}</h4></div>
+                                        <div class="info_fact__inforamtion_or_fact_text__text">
+                                            {#                                    Привет как дела ты тут одна? Лу Кларк знает, сколько шагов от автобусной остановки до ее дома. Она знает, что ей очень нравится работа в кафе и что, скорее всего, она не любит своего бойфренда Патрика. Но Лу не знает, что вот-вот потеряет свою работу и что в ближайшем будущем ей понадобятся все силы, чтобы преодолеть свалившиеся на нее проблемы. Уилл Трейнор знает, что сбивший его мотоциклист отнял у него желание жить. И он точно знает, что надо сделать, чтобы положить конец всему этому. Но он не знает, что Лу скоро ворвется в его мир буйством красок. И они оба не знают, что навсегда изменят жизнь друг друга.#}
+                                            {{ title.text }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% elif content_line.type == 'person_titles' %}
+                    <div class="person_titles_wrapper">
+                        <div class="person_titles_naming"></div>
+                        <div class="person_titles_container">
+                            <div class="person_titles__titles_container">
+                                <div class="poster-container_wrapper_something_to_titles">
+                                    <var style="display: none" class="person_titles__point_of_interes"></var>
+
+                                    <div class="poster-container" id="poster-container">
+                                        <a class="button_scroll_content_left">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24"
+                                                 width="20"
+                                                 height="20">
+                                                <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                                            </svg>
+                                        </a>
+                                        <a class="button_scroll_content_right" id="test_button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24"
+                                                 width="20"
+                                                 height="20">
+                                                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                            </svg>
+                                        </a>
+                                        {% for title in content_line.content.titles %}
+                                            <div class="poster-item">
+                                                <a href="/title/{{ title.id }}">
+                                                    <img src="{{ title.poster }}" alt="{{ title.name }}">
+                                                    <div class="poster-title">{{ title.name }}</div>
+                                                    <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                                    <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                                    <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="person_titles__person_container">
+                                <div class="poster-item">
+                                    <a href="/person/{{ content_line.content.person.id }}">
+                                        <img src="{{ content_line.content.person.photo }}"
+                                             alt="{{ content_line.content.person.name }}">
+                                        <div class="poster-title">{{ content_line.content.person.name }}</div>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% elif content_line.type == 'movie_titles' %}
+                    <div class="movie_titles_wrapper">
+                        <div class="movie_titles_container">
+                            <div class="movie_titles__movie_container">
+                                <div class="poster-item">
+                                    <a href="/title/{{ content_line.content.title.id }}">
+                                        <img src="{{ content_line.content.title.poster }}"
+                                             alt="{{ content_line.content.title.name }}">
+                                        <div class="poster-title">{{ content_line.content.title.name }}</div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="movie_titles__titles_container">
+                                <div class="poster-container_wrapper_something_to_titles">
+                                    <var style="display: none" class="person_titles__point_of_interes"></var>
+
+                                    <div class="poster-container" id="poster-container">
+                                        <a class="button_scroll_content_left">
+                                            <-
+                                        </a>
+                                        <a class="button_scroll_content_right" id="test_button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24"
+                                                 width="20"
+                                                 height="20">
+                                                <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                                            </svg>
+                                        </a>
+                                        {% for title in content_line.content.titles %}
+                                            <div class="poster-item">
+                                                <a href="/title/{{ title.id }}">
+                                                    <img src="{{ title.poster }}" alt="{{ title.name }}">
+                                                    <div class="poster-title">{{ title.name }}</div>
+                                                    <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                                    <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                                    <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endfor %}
+    <style>
+        .info_fact_container {
+            display: grid;
+            /* Три колонки */
+            grid-template-columns: repeat(2, 1fr);
+        {#auto auto;#}
+            /* Два ряда */
+            grid-template-rows: 150px 150px;
+            /* Автоматическое размещение в ряд */
+            grid-auto-flow: row;
+            /* Отступы между ячейками */
+            gap: 20px;
+        {#background-color: black;#} padding: 20px 20px 20px;
+            overflow: hidden;
+        }
+
+        .info_fact__inforamtion_or_fact_text {
+            position: relative;
+            display: block;
+            flex-grow: 1;
+            height: 150px;
+            overflow: scroll;
+
+        }
+
+        .container_main {
+            background-color: #F2D0CE;
+        }
+
+        .info_fact__item {
+            background-color: deepskyblue;
+        }
+
+        .info_fact__poster_item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info_fact__poster_item img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .info_fact__inforamtion_or_fact_text__text {
+            display: inline;
+        {#overflow: scroll;#}{#visibility: hidden#}
+        }
+    </style>
+    <style>
+        .person_titles_container {
+            display: grid;
+            width: 1000px;
+            grid-template-columns: auto 200px;
+            gap: 10px;
+        }
+
+        .person_titles__person_container {
+            right: 0;
+            width: 200px;
+        }
+
+        .person_titles__titles_container {
+            width: auto;
+        }
+
+        .person_titles_wrapper {
+            display: block;
+        }
+
+        .poster-container_wrapper_something_to_titles {
+            width: 790px;
+            position: relative;
+            padding: 0 25px 0;
+            overflow: scroll;
+        }
+    </style>
+    <style>
+        .movie_titles__movie_container {
+        }
+
+        .movie_titles_container {
+            display: grid;
+            width: 1000px;
+            grid-template-columns: 200px auto;
+            gap: 10px;
+        }
+
+        .movie_titles__movie_container {
+            right: 0;
+            width: 200px;
+        }
+
+        .movie_titles__titles_container {
+            width: auto;
+        }
+
+        .movie_titles_wrapper {
+            display: block;
+        }
+
+        .add_content__wrapper {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .add_content__button {
+            background-color: palevioletred;
+            color: black;
+            font-size: 25px;
+            padding: 10px 10px 10px;
+            border-radius: 90px;
+
+        }
+
+        .add_content__button:hover {
+            background-color: #914a61;
+            color: white;
+        }
+    </style>
+    <div id="new-content"></div>
+    <div class="add_content__wrapper"><a class="add_content__button" id="add_content__on_menu">Добавить</a></div>
+    <div style="height: 300px"></div>
+{% endblock %}
+
+{% block mobile_head %}
+    <style>
+        .menu_link{
+            color: black;
+            &:hover{
+                color: #CD180E;
+            }
+        }
+        .mobile_menu_wrapper {
+            padding: 0 10px 0;
+        }
+        .mobile_top_titles_block{
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            bottom: 50px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            transform: rotate(45deg);
+            z-index: 100;
+            background-color: #6B7A6F;
+            color: #ffffff;
+            &.main{
+                background-color: #CD180E;
+                color: white;
+            }
+        }
+        .mobile_top_titles_main_block_text{
+            font-size: 100px;
+            font-family: "Rouge Script";
+            transform: rotate(-45deg);
+        }
+
+        .mobile_top_titles_block_text{
+            font-size: 50px;
+            font-family: "Rouge Script";
+            transform: rotate(-45deg);
+            z-index: 100;
+        }
+        .mobile_unit_of_content_container{
+            margin: 10px 0 10px;
+        }
+        .text_title_for_menu_list{
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .mobile_info_fact_container{
+            overflow-x: scroll;
+            overflow-y: hidden;
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-columns: repeat(2, 330px);
+            grid-template-rows: repeat(2, 150px);
+            gap: 20px;
+        }
+        .mobile_info_fact__title_container{
+            display: flex;
+        }
+    </style>
+    <style>
+        .link {
+            text-decoration: none;
+            color: black;
+
+            &:hover {
+                color: black;
+            }
+        }
+
+        .mobile_name_of_block {
+            margin: 15px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mobile_item_poster_wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .mobile_poster_img {
+            width: 125px;
+            height: 187px;
+            background-color: #ffffff;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+
+        .mobile_poster_title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .rate_poster {
+            position: absolute;
+            padding: 2px 2px 2px;
+            color: black;
+        {#width: 50px;#} top: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+            border-radius: 90px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+            z-index: 100;
+
+            &.ratefilm {
+                left: 2px;
+                top: 2px;
+                background-color: #CD180E;
+                color: white;
+            }
+
+            &.kprate {
+                background-color: rgb(255, 84, 1);
+                left: 48px;
+                top: 2px;
+            }
+
+            &.imdbrate {
+                background-color: rgb(245, 197, 24);
+                top: 2px;
+                right: 2px;
+            }
+
+            &.block {
+                position: static;
+            }
+        }
+
+        .mobile_poster_container {
+            display: flex;
+            /*overflow-x: auto;*/
+            gap: 10px;
+            white-space: nowrap;
+            overflow-x: scroll;
+            overflow-y: hidden;
+
+            &::-webkit-scrollbar {
+                width: 0;
+                height: 0;
+            }
+
+            align-items: center;
+        }
+        
+        .mobile_info_fact__title_poster{
+            flex: 1;
+
+            & img{
+                width: 100px;
+                height: 150px;
+                object-fit: cover;
+                background-color: #ffffff;
+                display: block;
+            }
+        }
+        .mobile_info_fact__title_info{
+            flex: 5;
+            font-size: 14px;
+        }
+
+        .mobile_info_fact__title_info__name{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .mobile_info_fact__title_info__text{
+            font-size: 14px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block mobile_content %}
+    <div class="mobile_menu_wrapper">
+{#        <div class="mobile_name_of_block">Добро пожаловать</div>#}
+        {% for content_line in contents_for_menu %}
+            <div class="mobile_unit_of_content_container">
+            {% if content_line.content.titles %}
+                <div class="text_title_for_menu_list">{{ content_line.content.heading | safe }}</div>
+                {% if content_line.type == 'top' %}
+                    <div class="mobile_poster_container_wrapper">
+                        <div class="mobile_poster_container" id="poster-container">
+                            {% for title in content_line.content.titles %}
+
+                                <div class="mobile_item_poster_wrapper">
+                                    {% if title.type_object == 2 %}
+                                        <a href="/person/{{ title.id }}">
+                                    {% else %}
+                                        <a href="/title/{{ title.id }}">
+                                    {% endif %}
+                                        <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                             alt="{{ title.name }}">
+                                        <div class="mobile_poster_title">{{ title.name }}</div>
+                                        {% if title.type_object == 1 %}
+                                            <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                            <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                            <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+                                        {% endif %}
+
+                                        {% if forloop.counter == 1 %}
+                                            <div class="mobile_top_titles_block main">
+                                                <div class="mobile_top_titles_main_block_text">1</div>
+                                            </div>
+                                        {% else %}
+                                            <div class="mobile_top_titles_block">
+                                                <div class="mobile_top_titles_block_text">{{ forloop.counter }}</div>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% elif content_line.type == 'list_titles' %}
+                    <div class="mobile_poster_container" id="poster-container">
+                        {% for title in content_line.content.titles %}
+
+                            <div class="mobile_item_poster_wrapper">
+                                {% if title.type_object == 2 %}
+                                    <a href="/person/{{ title.id }}">
+                                {% else %}
+                                    <a href="/title/{{ title.id }}">
+                                {% endif %}
+                                    <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                         alt="{{ title.name }}">
+                                    <div class="mobile_poster_title">{{ title.name }}</div>
+
+                                <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elif content_line.type == 'info_fact' %}
+                    <div class="mobile_info_fact_container">
+                        {% for title in content_line.content.titles %}
+                            <a class="link" href="/title/{{ title.id }}">
+                                <div class="mobile_info_fact__title_container">
+                                    <div class="mobile_info_fact__title_poster">
+                                        <img class="mobile_info_fact_poster_img" src="{{ title.poster }}" onerror="this" alt="{{ title.name }}">
+                                    </div>
+                                    <div class="mobile_info_fact__title_info">
+                                        <div class="mobile_info_fact__title_info__name"> {{ title.name }} </div>
+                                        <div class="mobile_info_fact__title_info__text"> {{ title.text }} </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% elif content_line.type == 'person_titles' %}
+                     <div class="mobile_poster_container" id="poster-container">
+                        {% for title in content_line.content.titles %}
+
+                            <div class="mobile_item_poster_wrapper">
+                                {% if title.type_object == 2 %}
+                                    <a href="/person/{{ title.id }}">
+                                {% else %}
+                                    <a href="/title/{{ title.id }}">
+                                {% endif %}
+                                    <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                         alt="{{ title.name }}">
+                                    <div class="mobile_poster_title">{{ title.name }}</div>
+                                    <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                    <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                    <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% elif content_line.type == 'movie_titles' %}
+                     <div class="mobile_poster_container" id="poster-container">
+                        {% for title in content_line.content.titles %}
+
+                            <div class="mobile_item_poster_wrapper">
+                                {% if title.type_object == 2 %}
+                                    <a href="/person/{{ title.id }}">
+                                {% else %}
+                                    <a href="/title/{{ title.id }}">
+                                {% endif %}
+                                    <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this"
+                                         alt="{{ title.name }}">
+                                    <div class="mobile_poster_title">{{ title.name }}</div>
+                                    <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                                    <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                                    <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+

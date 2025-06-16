@@ -1,0 +1,580 @@
+{% extends 'title/../universe/../universe/base.html' %}
+{% block universe_head %}
+	<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const field_favorite = document.getElementById('field_to_favorite');
+            var isfavorite = {{ isfavorite }}
+
+            const csrftoken = getCookie('csrftoken');
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        let cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (isfavorite === 1) {
+                change_view_heart(1)
+            }
+
+            field_favorite.addEventListener("click", (event) => {
+                {#alert('asja')#}
+                if (isfavorite === 1) {
+                    var path_post = 'favoriteout'
+                    isfavorite = 0
+                } else {
+                    var path_post = 'favoriteit'
+                    isfavorite = 1
+                }
+                fetch(window.location.pathname + path_post, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                    })
+                    .then(data => {
+
+                    })
+                if (isfavorite === 1) {
+                    change_view_heart(1)
+                } else {
+                    change_view_heart(0)
+                }
+
+            });
+            function change_view_heart(change_type) {
+                if (change_type === 1) {
+                    text_update = `<svg class="svg_icon active" xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z"/></svg>`
+                    field_favorite.classList.add('active')
+
+                } else {
+                    text_update = `<svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" width="26" height="26"><path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>`
+                    field_favorite.classList.remove('active')
+
+                }
+                icon_switch_favorite.innerHTML = text_update
+
+            }
+        });
+
+    </script>
+{% endblock %}
+{% block head %}
+    
+    <style>
+    .person__wrapper {
+        display: grid;
+        grid-template-columns: auto 300px;
+        gap: 30px;
+    
+    }
+    .person__right_info{
+        position: sticky;
+        top: 0;
+        background-color: white;
+        padding-top: 65px;
+        height: 100vh;
+        
+    }
+    .person__name{
+        margin: 20px 14px 20px;
+    }
+    .person__poster{
+        margin: 0 50px 0;
+        min-width: auto;
+        max-width: 200px;
+    }    
+    .person__person_info_wrapper{
+        margin: 20px 0 0;
+    }
+    .person__person_info{
+        display: flex;
+        flex-direction: row;
+    }
+    .person__person_info__keys{
+        flex: 1;
+    }
+    .person__person_info__values{
+        flex: 1;
+    }
+    .person__poster__wrapper{
+        
+    }
+    .person__left_titles{
+        overflow-y: auto;
+
+
+    }
+    .person__top_titles_wrapper{
+    }
+    .person__top_titles{
+        display: flex;
+        flex-direction: row;
+        min-height: 80px;
+        margin: 25px 0 0;
+        padding: 0 15px 0;
+        background-color: #F2D0CE;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(194, 177, 196, 1);
+
+    }
+    .person__image_container{
+        flex: 1;
+        max-width: 86px;
+    }
+    .person__top_titles_poster{
+        margin-right: 15px;
+        display: flex;
+        justify-content: center;
+        height: 80px;
+    }
+    .person__top_titles__title_info{
+        padding: 10px 0 10px;
+        flex: 1;
+    }
+    .poster-imdbrate {
+        bottom: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgb(245, 197, 24);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .poster-kprate {
+        bottom: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgba(255,84,1, 0.9);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .poster-ratefilm{
+        bottom: 5px;
+        right: 5px;
+        width: 50px;
+        height: 24px;
+        background-color: rgba(219, 112, 147, 0.9);
+        color: black;
+        box-sizing: border-box;
+        border-radius: 90px;
+        text-align: center;
+    }
+    .person__list_titles__flex_info{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    .person__list_titles__info_person_wrapper{
+        flex: auto;
+        display: flex;
+        flex-direction: row;
+        
+    }
+    .person__list_titles__info_person_left{
+        flex: 1;
+    }
+    .person__list_titles__info_person_right{
+        flex: 1;
+    }
+    .person__link_to_title{
+        color: black;
+        text-decoration: none;
+    }
+    .person__link_to_title:hover{
+        color: black;
+    }
+    .person__link_to_title:hover .person__top_titles{
+        background-color: #A9F2F5;
+    }
+    .person_buttons_wrapper{
+        margin: 15px 0 15px;
+        display: flex;
+
+    }
+    .person__favorite_button{
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+            border-radius: 90px;
+            padding: 10px 10px;
+            cursor: default;
+            color: black;
+            border-top: None;
+            text-decoration: none;
+            &.active {
+                background-color: #CD180E;
+                color: white;
+            }
+            &.active:hover {
+                background-color: #a6150d;
+                color: #cacaca;
+            }
+            &:hover {
+                color: gray;
+                background-color: #f3f0ef;
+            }
+        }
+    </style>
+    
+{% endblock %}
+
+{% block content %}
+    <div class="person__wrapper">
+        
+        <div class="person__left_titles">
+            <div class="person__top_titles_wrapper">
+                <h3 class="person__name_">Лучшие работы</h3>
+                {% for title in top_titles %}
+                    <a class="person__link_to_title" href="/title/{{ title.id }}/">
+                        <div class="person__top_titles">
+                            <div class="person__image_container">
+                                <img class="person__top_titles_poster" src="{{ title.poster }}" onerror="this.src='https://image.openmoviedb.com/kinopoisk-st-images//actor_iphone/iphone360_3715690.jpg';">
+                            </div>
+                            <div class="person__top_titles__title_info">
+                                <h4 style="font-size: 24px;">{{ title.name }} ({{ title.year_create }})</h4>
+                                <div class="person__list_titles__flex_info">
+                                    <div class="poster-ratefilm">{{ title.rate_film }}</div>
+                                    <div class="poster-kprate">{{ title.kp_rate }}</div>
+                                    <div class="poster-imdbrate">{{ title.imdb_rate }}</div>
+                                    <div class="person__list_titles__info_person_wrapper">
+                                        <div class="person__list_titles__info_person_left">
+                                            {{ title.name_profession }}
+                                        </div>
+                                        <div class="person__list_titles__info_person_right">
+                                            {{ title.description }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            <div class="person__titles_wrapper">
+                <h3 class="person__name_">Все работы</h3>
+                {% for title in titles %}
+                    <a class="person__link_to_title" href="/title/{{ title.id }}/">
+                        <div class="person__top_titles">
+    
+                            <div class="person__top_titles__title_info">
+                                <h4 style="font-size: 24px;">{{ title.name }} ({{ title.year_create }})</h4>
+                                <div class="person__list_titles__flex_info">
+                                    <div class="poster-ratefilm">{{ title.rate_film }}</div>
+                                    <div class="poster-kprate">{{ title.kp_rate }}</div>
+                                    <div class="poster-imdbrate">{{ title.imdb_rate }}</div>
+                                    <div class="person__list_titles__info_person_wrapper">
+                                        <div class="person__list_titles__info_person_left">
+                                            {{ title.name_profession }}
+                                        </div>
+                                        <div class="person__list_titles__info_person_right">
+                                            {{ title.description }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="person__right_info">
+            <div class="person__name">
+                <h1>{{ person.name }}</h1>
+            </div>
+            <div class="person__poster__wrapper">
+                <img class="person__poster" src="{{ person.photo }}" alt="{{ person.name }}">
+            </div>
+{#        name, photo, enname, age, sex, growth#}
+            <div class="person_buttons_wrapper">
+                <a class="person__favorite_button" id="field_to_favorite">
+                    <span class="userDo__crown" id="icon_switch_favorite">
+                        <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                                             viewBox="0 0 24 24" width="26" height="26"><path
+                                                d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>
+                    </span>
+
+                    Любимое
+                </a>
+            </div>
+            {% if person.enname %}
+                <div class="person__person_info">
+                    <div class="person__person_info__keys"><h6>Альтернативное имя</h6></div>
+                    <div class="person__person_info__values"><p>{{ person.enname }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.age %}
+                <div class="person__person_info">
+                    <div class="person__person_info__keys"><h6>Возраст</h6></div>
+                    <div class="person__person_info__values"><p>{{ person.age }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.age %}
+                <div class="person__person_info">
+                    <div class="person__person_info__keys"><h6>Пол</h6></div>
+                    <div class="person__person_info__values"><p>{{ person.sex }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.growth %}
+                <div class="person__person_info">
+                    <div class="person__person_info__keys"><h6>Рост</h6></div>
+                    <div class="person__person_info__values"><p>{{ person.growth }}</p></div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block mobile_head %}
+    <style>
+        .mobile_person_wrapper{
+            padding: 0 5px 0;
+        }
+        .mobile_person__poster_info_wrapper{
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        }
+        .mobile_poster {
+            width: 200px;
+        }
+        .mobile_person__info{
+
+        }
+        .mobile_person__info__text_values{
+        font-size: 14px;
+    }
+    .mobile_person__info__text_values_name{
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .mobile_person_name{
+            font-size: 30px;
+    }
+    .mobile_person__button{
+        text-align: center;
+        flex: 1;
+        box-shadow: 0 1px 2px rgba(107, 122, 111, 0.50);
+        border-radius: 90px;
+        padding: 10px 10px;
+        cursor: default;
+        color: black;
+        border-top: None;
+        text-decoration: none;
+        display: block;
+
+
+        &.active {
+            background-color: #CD180E;
+            color: white;
+
+        }
+    }
+    .mobile_person_title__name{
+        font-weight: bold;
+    }
+    .mobile_person_title_container{
+        background-color: #F2D0CE;
+        border-radius: 10px;
+        margin: 10px 0 10px;
+    }
+    .mobile_person_title__rates{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+    .mobile_person_title__info{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    </style>
+{% endblock %}
+
+{% block mobile_content %}
+    <div class="mobile_person_wrapper">
+        <div class="mobile_person_name">{{ person.name }}</div>
+        <div class="mobile_person__poster_info_wrapper">
+            <div>
+                <img class="mobile_poster" src="{{ person.photo }}" alt="{{ person.name }}">
+            </div>
+            <div class="mobile_person__info">
+            <a class="mobile_person__button" id="field_to_favorite" data-value="0">
+                <span class="userDo__crown" id="icon_switch_favorite">
+                    <svg class="svg_icon" xmlns="http://www.w3.org/2000/svg" id="Outline"
+                         viewBox="0 0 24 24" width="26" height="26"><path
+                            d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Zm-3.585,18.4a2.973,2.973,0,0,1-3.83,0C4.947,16.006,2,11.87,2,8.967a4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,11,8.967a1,1,0,0,0,2,0,4.8,4.8,0,0,1,4.5-5.05A4.8,4.8,0,0,1,22,8.967C22,11.87,19.053,16.006,13.915,20.313Z"/></svg>
+                </span>
+                Любимое
+            </a>
+                {% if person.enname %}
+                <div class="mobile_person__info__text_values">
+                    <div class="mobile_person__info__text_values_name"><h6>Альтернативное имя</h6></div>
+                    <div class="mobile_person__info__text_values_value"><p>{{ person.enname }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.age %}
+                <div class="mobile_person__info__text_values">
+                    <div class="mobile_person__info__text_values_name"><h6>Возраст</h6></div>
+                    <div class="mobile_person__info__text_values_value"><p>{{ person.age }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.age %}
+                <div class="mobile_person__info__text_values">
+                    <div class="mobile_person__info__text_values_name"><h6>Пол</h6></div>
+                    <div class="mobile_person__info__text_values_value"><p>{{ person.sex }}</p></div>
+                </div>
+            {% endif %}
+            {% if person.growth %}
+                <div class="mobile_person__info__text_values">
+                    <div class="mobile_person__info__text_values_name"><h6>Рост</h6></div>
+                    <div class="mobile_person__info__text_values_value"><p>{{ person.growth }}</p></div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        <div class="mobile_name_of_block">Лучшие работы</div>
+
+        <div class="mobile_person_top_titles_wrapper">
+            <div class="mobile_poster_container" id="poster-container">
+                {% for title in top_titles %}
+                    <div class="mobile_item_poster_wrapper">
+                        <a href="/title/{{ title.id }}">
+                            <img class="mobile_poster_img" src="{{ title.poster }}" onerror="this" alt="{{ title.name }}">
+                            <div class="mobile_poster_title">{{ title.name }}</div>
+                            <div class="rate_poster ratefilm">{{ title.rate_film }}</div>
+                            <div class="rate_poster kprate">{{ title.kp_rate }}</div>
+                            <div class="rate_poster imdbrate">{{ title.imdb_rate }}</div>
+
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="mobile_name_of_block">Все работы</div>
+
+        <div class="mobile_person__all_titles_wrapper">
+            {% for title in titles %}
+                <a class="link" href="/title/{{ title.id }}">
+                    <div class="mobile_person_title_container">
+                        <div class="mobile_person_title__name">
+                            {{ title.name }} ({{ title.year_create }})
+                        </div>
+                        <div class="mobile_person_title__rates">
+                            <div class="rate_poster ratefilm block">{{ title.rate_film }}</div>
+                            <div class="rate_poster kprate block">{{ title.kp_rate }}</div>
+                            <div class="rate_poster imdbrate block">{{ title.imdb_rate }}</div>
+                        </div>
+                        <div class="mobile_person_title__info">
+                            <div>{{ title.name_profession }}</div>
+                            <div>{{ title.description }}</div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <style>
+    .link{
+        text-decoration: none;
+        color: black;
+        &:hover{
+            color: black;
+        }
+    }
+    .mobile_name_of_block{
+        margin: 15px 0 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .mobile_item_poster_wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .mobile_poster_img{
+            width: 125px;
+            height: 187px;
+            background-color: #ffffff;
+            object-fit: cover;
+            display: block; /* Чтобы убрать небольшой отступ снизу */
+        }
+        .mobile_poster_title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .rate_poster{
+            position: absolute;
+            padding: 2px 2px 2px;
+            color: black;
+            {#width: 50px;#}
+            top: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+            border-radius: 90px;
+            text-align: center;
+            height: 20px;
+            width: 30px;
+            z-index: 100;
+            &.ratefilm{
+                left:2px;
+                top: 2px;
+                background-color: #CD180E;
+                color: white;
+            }
+            &.kprate{
+                background-color: rgb(255, 84, 1);
+                left: 48px;
+                top: 2px;
+            }
+            &.imdbrate{
+                background-color: rgb(245, 197, 24);
+                top: 2px;
+                right: 2px;
+            }
+            &.block{
+                position: static;
+            }
+        }
+        .mobile_poster_container {
+            display: flex;
+            /*overflow-x: auto;*/
+            gap: 10px;
+            white-space: nowrap;
+            overflow-x: scroll;
+            overflow-y: hidden;
+
+            &::-webkit-scrollbar { width: 0; height: 0;}
+            align-items: center;
+        }
+    </style>
+{% endblock %}
